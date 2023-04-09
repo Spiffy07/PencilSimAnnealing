@@ -6,13 +6,15 @@
 //void GenerateTables(std::vector<Table>& tablesIn);
 //void GenerateDealers(std::vector<Dealer>& dealersIn);
 
+// static member declarations
+unsigned int Dealer::employeeNumberCounter;
 
 int main()
 {
 	std::vector<Table> tables;	
 	std::vector<Dealer> dealers;
-	GenerateTables(tables);
-	GenerateDealers(dealers);
+	Table::GenerateTables(tables);
+	Dealer::GenerateDealers(dealers);
 
 	std::cout << "Program Successfully ran!" << std::endl;
 	return 0;
