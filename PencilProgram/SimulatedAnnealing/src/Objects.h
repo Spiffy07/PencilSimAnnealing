@@ -17,9 +17,10 @@ public:
 	std::vector<bool> gameKnowledge;				// Determine list of games and set vector.resize
 	int pushMinutes;
 
+		// constructors
 	Dealer();
-
 	Dealer(std::string nameIn);
+	Dealer(const Dealer& dealer);
 
 	static void GenerateDealers(std::vector<Dealer>& dealersIn);
 };
@@ -32,16 +33,10 @@ public:
 	int number;
 	std::string gameName;
 
-	Table(int numIn, std::string nameIn)		// constructor
-		: number(numIn), gameName(nameIn)
-	{
-	}
-
-	Table(const Table& table)					// copy constructor
-		:number(table.number), gameName(table.gameName)
-	{
-		std::cout << "Table object copied!" << std::endl;
-	}
+		// constructors
+	Table() = delete;			// do not allow blank Table object
+	Table(int numIn, std::string nameIn);
+	Table(const Table& table);
 
 	static void GenerateTables(std::vector<Table>& tablesIn);
 };

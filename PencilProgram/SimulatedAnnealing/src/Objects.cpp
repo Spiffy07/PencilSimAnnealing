@@ -2,6 +2,7 @@
 
 const unsigned int STARTING_EMPLOYEE_NUMBER = 100000;
 
+	// constructors
 Dealer::Dealer()
 	: pushMinutes(0)
 {
@@ -15,7 +16,6 @@ Dealer::Dealer()
 	gameKnowledge.emplace_back(false);
 	gameKnowledge.emplace_back(false);
 }
-
 Dealer::Dealer(std::string nameIn)
 	: name(nameIn), pushMinutes(0)
 {
@@ -27,6 +27,12 @@ Dealer::Dealer(std::string nameIn)
 	gameKnowledge.emplace_back(false);
 	gameKnowledge.emplace_back(false);
 	gameKnowledge.emplace_back(false);
+}
+Dealer::Dealer(const Dealer& dealer)
+	: name(dealer.name), employeeNumber(dealer.employeeNumber), 
+	gameKnowledge(dealer.gameKnowledge), pushMinutes(dealer.pushMinutes)
+{
+	std::cout << "Dealer object copied!" << std::endl;
 }
 
 void Dealer::GenerateDealers(std::vector<Dealer>& dealersIn)
@@ -43,6 +49,17 @@ void Dealer::GenerateDealers(std::vector<Dealer>& dealersIn)
 	dealersIn.emplace_back();
 	dealersIn.emplace_back();
 	dealersIn.emplace_back();
+}
+
+	// constructors
+Table::Table(int numIn, std::string nameIn)
+	:number(numIn), gameName(nameIn)
+{
+}
+Table::Table(const Table& table)
+	:number(table.number), gameName(table.gameName)
+{
+	std::cout << "   Table object copied!" << std::endl;
 }
 
 void Table::GenerateTables(std::vector<Table>& tablesIn)
