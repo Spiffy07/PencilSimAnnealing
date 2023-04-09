@@ -104,7 +104,7 @@ void GenerateDealers(std::vector<Dealer>& dealersIn)
 	dealersIn.emplace_back("Clarissa");
 	dealersIn.emplace_back("Tiffany");
 	dealersIn.emplace_back("Chris");
-	dealersIn.emplace_back();
+	dealersIn.emplace_back("alex");
 	dealersIn.emplace_back();
 	dealersIn.emplace_back();
 	dealersIn.emplace_back();
