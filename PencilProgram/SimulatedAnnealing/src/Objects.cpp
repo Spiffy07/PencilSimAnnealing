@@ -16,6 +16,7 @@ Dealer::Dealer()
 	gameKnowledge.emplace_back(false);
 	gameKnowledge.emplace_back(false);
 }
+
 Dealer::Dealer(std::string nameIn)
 	: name(nameIn), pushMinutes(0)
 {
@@ -28,6 +29,7 @@ Dealer::Dealer(std::string nameIn)
 	gameKnowledge.emplace_back(false);
 	gameKnowledge.emplace_back(false);
 }
+
 Dealer::Dealer(const Dealer& dealer)
 	: name(dealer.name), employeeNumber(dealer.employeeNumber), 
 	gameKnowledge(dealer.gameKnowledge), pushMinutes(dealer.pushMinutes)
@@ -51,11 +53,14 @@ void Dealer::GenerateDealers(std::vector<Dealer>& dealersIn)
 	dealersIn.emplace_back();
 }
 
+
+
 	// constructors
 Table::Table(int numIn, std::string nameIn)
 	:number(numIn), gameName(nameIn)
 {
 }
+
 Table::Table(const Table& table)
 	:number(table.number), gameName(table.gameName)
 {
