@@ -4,6 +4,14 @@
 
 /PencilProgram/~$logic.docx
 PencilProgram/.vs
+PencilProgram/.vs/
 /PencilProgram/.vs/PencilProgram/v17/.suo
 /PencilProgram/.vs/PencilProgram/v17/Browse.VC.db
 /PencilProgram/.vs/PencilProgram/v17/ipch/AutoPCH/9d0d506d9fde45bb/MAIN.ipch
+<<<<<<< HEAD
+=======
+/PencilProgram/SimulatedAnnealing/SimulatedAnnealing.vcxproj
+/PencilProgram/SimulatedAnnealing/SimulatedAnnealing.vcxproj.filters
+/PencilProgram/.vs/PencilProgram/v17/ipch/AutoPCH/1661b8c9195ff6d4/OBJECTS.ipch
+/PencilProgram/.vs/PencilProgram/v17/ipch/AutoPCH/1661b8c9195ff6d4/OBJECTS.ipch
+>>>>>>> Modularize
