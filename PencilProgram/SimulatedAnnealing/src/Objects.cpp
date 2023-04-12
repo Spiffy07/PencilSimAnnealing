@@ -4,7 +4,7 @@ const unsigned int STARTING_EMPLOYEE_NUMBER = 100000;
 
 	// constructors
 Dealer::Dealer()
-	: pushMinutes(0)
+	: pushMinutes(0), tablesAssigned(0)
 {
 	employeeNumberCounter++;
 	employeeNumber = STARTING_EMPLOYEE_NUMBER + employeeNumberCounter;
@@ -18,7 +18,7 @@ Dealer::Dealer()
 }
 
 Dealer::Dealer(std::string nameIn)
-	: name(nameIn), pushMinutes(0)
+	: name(nameIn), pushMinutes(0), tablesAssigned(0)
 {
 	employeeNumberCounter++;
 	employeeNumber = STARTING_EMPLOYEE_NUMBER + employeeNumberCounter;
@@ -31,7 +31,7 @@ Dealer::Dealer(std::string nameIn)
 }
 
 Dealer::Dealer(std::string nameIn, std::vector<bool> gameKnowledgeIn)
-	: name(nameIn), gameKnowledge(gameKnowledgeIn), pushMinutes(0)
+	: name(nameIn), gameKnowledge(gameKnowledgeIn), pushMinutes(0), tablesAssigned(0)
 {
 	employeeNumberCounter++;
 	employeeNumber = STARTING_EMPLOYEE_NUMBER + employeeNumberCounter;
@@ -40,7 +40,8 @@ Dealer::Dealer(std::string nameIn, std::vector<bool> gameKnowledgeIn)
 
 Dealer::Dealer(const Dealer& dealer)
 	: name(dealer.name), employeeNumber(dealer.employeeNumber), 
-	gameKnowledge(dealer.gameKnowledge), pushMinutes(dealer.pushMinutes)
+	gameKnowledge(dealer.gameKnowledge), pushMinutes(dealer.pushMinutes),
+	tablesAssigned(0)
 {
 	std::cout << "Dealer object copied!" << std::endl;
 }
@@ -82,11 +83,18 @@ void Table::GenerateTables(std::vector<Table>& tablesIn)
 	tablesIn.emplace_back(101, "BJ");
 	tablesIn.emplace_back(102, "BJ");
 	tablesIn.emplace_back(103, "BJ");
-	tablesIn.emplace_back(104, "Poker");
-	tablesIn.emplace_back(105, "Poker");
+	tablesIn.emplace_back(104, "BJ");
+	tablesIn.emplace_back(105, "BJ");
 	tablesIn.emplace_back(106, "Poker");
-	tablesIn.emplace_back(107, "BJ");
-	tablesIn.emplace_back(108, "BJ");
+	tablesIn.emplace_back(107, "Poker");
+	tablesIn.emplace_back(108, "Poker");
 	tablesIn.emplace_back(109, "MB");
 	tablesIn.emplace_back(110, "Rou");
 }
+
+
+Assignment::Assignment(Table& t, Dealer& d) 
+	: aTable(t), aDealer(d)
+{
+}
+
