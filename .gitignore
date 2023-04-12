@@ -12,3 +12,17 @@ PencilProgram/.vs/
 /PencilProgram/SimulatedAnnealing/SimulatedAnnealing.vcxproj.filters
 /PencilProgram/.vs/PencilProgram/v17/ipch/AutoPCH/1661b8c9195ff6d4/OBJECTS.ipch
 /PencilProgram/.vs/PencilProgram/v17/ipch/AutoPCH/1661b8c9195ff6d4/OBJECTS.ipch
+/PencilProgram/bin/
+/PencilProgram/bin/intermediates/
+/PencilProgram/bin/intermediates/x64/Debug/PencilSi.65F6D3C4.tlog/CL.read.1.tlog
+/PencilProgram/bin/intermediates/x64/Debug/PencilSi.65F6D3C4.tlog/CL.write.1.tlog
+/PencilProgram/bin/intermediates/x64/Debug/PencilSi.65F6D3C4.tlog/link.read.1.tlog
+/PencilProgram/bin/intermediates/x64/Debug/PencilSi.65F6D3C4.tlog/link.write.1.tlog
+/PencilProgram/bin/intermediates/x64/Debug/Main.obj
+/PencilProgram/bin/intermediates/x64/Debug/Objects.obj
+/PencilProgram/bin/intermediates/x64/Debug/PencilSimAnnealing.ilk
+/PencilProgram/bin/intermediates/x64/Debug/PencilSimAnnealing.log
+/PencilProgram/bin/intermediates/x64/Debug/vc143.idb
+/PencilProgram/bin/intermediates/x64/Debug/vc143.pdb
+/PencilProgram/bin/x64/Debug/PencilSimAnnealing.exe
+/PencilProgram/bin/x64/Debug/PencilSimAnnealing.pdb

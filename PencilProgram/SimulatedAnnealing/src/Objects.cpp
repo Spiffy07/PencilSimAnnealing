@@ -14,7 +14,7 @@ Dealer::Dealer()
 	gameKnowledge.emplace_back(true);
 	gameKnowledge.emplace_back(false);
 	gameKnowledge.emplace_back(false);
-	gameKnowledge.emplace_back(false);
+	gameKnowledge.emplace_back(true);
 }
 
 Dealer::Dealer(std::string nameIn)
@@ -27,7 +27,15 @@ Dealer::Dealer(std::string nameIn)
 	gameKnowledge.emplace_back(true);
 	gameKnowledge.emplace_back(false);
 	gameKnowledge.emplace_back(false);
-	gameKnowledge.emplace_back(false);
+	gameKnowledge.emplace_back(true);
+}
+
+Dealer::Dealer(std::string nameIn, std::vector<bool> gameKnowledgeIn)
+	: name(nameIn), gameKnowledge(gameKnowledgeIn), pushMinutes(0)
+{
+	employeeNumberCounter++;
+	employeeNumber = STARTING_EMPLOYEE_NUMBER + employeeNumberCounter;
+
 }
 
 Dealer::Dealer(const Dealer& dealer)
@@ -41,11 +49,11 @@ void Dealer::GenerateDealers(std::vector<Dealer>& dealersIn)
 {
 	dealersIn.reserve(NUMBER_OF_DEALERS);
 
-	dealersIn.emplace_back("Thomas");
-	dealersIn.emplace_back("Clarissa");
-	dealersIn.emplace_back("Tiffany");
+	dealersIn.emplace_back("Thomas", std::vector<bool>{true, true, true, true});
+	dealersIn.emplace_back("Clarissa", std::vector<bool>{true, true, true, true});
+	dealersIn.emplace_back("Tiffany", std::vector<bool>{true, true, true, true});
 	dealersIn.emplace_back("Chris");
-	dealersIn.emplace_back("alex");
+	dealersIn.emplace_back("Alex", std::vector<bool>{true, true, true, true});
 	dealersIn.emplace_back();
 	dealersIn.emplace_back();
 	dealersIn.emplace_back();

@@ -20,6 +20,7 @@ public:
 		// constructors
 	Dealer();
 	Dealer(std::string nameIn);
+	Dealer(std::string nameIn, std::vector<bool> gameKnowledgeIn);
 	Dealer(const Dealer& dealer);
 
 	static void GenerateDealers(std::vector<Dealer>& dealersIn);
