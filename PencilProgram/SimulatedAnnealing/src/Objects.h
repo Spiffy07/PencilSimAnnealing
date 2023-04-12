@@ -16,10 +16,12 @@ public:
 	int employeeNumber;
 	std::vector<bool> gameKnowledge;				// Determine list of games and set vector.resize
 	int pushMinutes;
+	int tablesAssigned;
 
 		// constructors
 	Dealer();
 	Dealer(std::string nameIn);
+	Dealer(std::string nameIn, std::vector<bool> gameKnowledgeIn);
 	Dealer(const Dealer& dealer);
 
 	static void GenerateDealers(std::vector<Dealer>& dealersIn);
@@ -41,3 +43,23 @@ public:
 	static void GenerateTables(std::vector<Table>& tablesIn);
 };
 
+
+class Assignment
+{
+public:
+	Table aTable;
+	Dealer aDealer;
+
+	Assignment() = delete;
+	Assignment(Table& t, Dealer& d);
+};
+
+
+class Push
+{
+public:
+	std::vector<Assignment> push;
+	int fitness;
+
+	//Push() = delete;
+};
