@@ -65,8 +65,8 @@ void Dealer::GenerateDealers(std::vector<Dealer>& dealersIn)
 
 
 	// constructors
-Table::Table(int numIn, std::string nameIn)
-	:number(numIn), gameName(nameIn)
+Table::Table(int numIn, Table::Games gameName)
+	:number(numIn), gameName(gameName)
 {
 }
 
@@ -80,16 +80,16 @@ void Table::GenerateTables(std::vector<Table>& tablesIn)
 {
 	tablesIn.reserve(NUMBER_OF_TABLES);
 
-	tablesIn.emplace_back(101, "BJ");
-	tablesIn.emplace_back(102, "BJ");
-	tablesIn.emplace_back(103, "BJ");
-	tablesIn.emplace_back(104, "BJ");
-	tablesIn.emplace_back(105, "BJ");
-	tablesIn.emplace_back(106, "Poker");
-	tablesIn.emplace_back(107, "Poker");
-	tablesIn.emplace_back(108, "Poker");
-	tablesIn.emplace_back(109, "MB");
-	tablesIn.emplace_back(110, "Rou");
+	tablesIn.emplace_back(101, BJ);
+	tablesIn.emplace_back(102, BJ);
+	tablesIn.emplace_back(103, BJ);
+	tablesIn.emplace_back(104, BJ);
+	tablesIn.emplace_back(105, BJ);
+	tablesIn.emplace_back(106, Poker);
+	tablesIn.emplace_back(107, Poker);
+	tablesIn.emplace_back(108, Poker);
+	tablesIn.emplace_back(109, MB);
+	tablesIn.emplace_back(110, Rou);
 }
 
 

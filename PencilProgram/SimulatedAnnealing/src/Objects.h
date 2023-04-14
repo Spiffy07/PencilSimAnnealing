@@ -32,12 +32,16 @@ public:
 class Table
 {
 public:
+	enum Games
+	{
+		BJ, Rou, MB, Poker
+	};
 	int number;
-	std::string gameName;
+	Games gameName;
 
 		// constructors
 	Table() = delete;			// do not allow blank Table object
-	Table(int numIn, std::string nameIn);
+	Table(int numIn, Games gameName);
 	Table(const Table& table);
 
 	static void GenerateTables(std::vector<Table>& tablesIn);

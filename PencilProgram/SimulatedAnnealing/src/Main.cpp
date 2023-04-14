@@ -9,7 +9,8 @@
 // static member declarations
 unsigned int Dealer::employeeNumberCounter;
 
-Push PopulateTables(const std::vector<Table>& tables, std::vector<Dealer> dealers);
+Push PopulateTables(const std::vector<Table>& tables, std::vector<Dealer>& dealers);
+void CalculateFitness(Push& push, std::vector<Dealer>& dealers);
 
 int main()
 {
@@ -19,14 +20,14 @@ int main()
 	Dealer::GenerateDealers(dealers);
 
 	srand(time(0));
-	PopulateTables(tables, dealers);
+	Push first = PopulateTables(tables, dealers);
 
 	std::cout << "Program Successfully ran!" << std::endl;
 	std::cin.get();
 	return 0;
 }
 
-Push PopulateTables(const std::vector<Table>& tables, std::vector<Dealer> dealers)
+Push PopulateTables(const std::vector<Table>& tables, std::vector<Dealer>& dealers)
 {
 	Push p;
 	p.push.reserve(NUMBER_OF_TABLES);
@@ -36,4 +37,25 @@ Push PopulateTables(const std::vector<Table>& tables, std::vector<Dealer> dealer
 	}
 
 	return p;
+}
+
+void CalculateFitness(Push& push, std::vector<Dealer>& dealers)
+{
+	push.fitness = 0;			// initialize and/or reset to zero
+	
+	for (Assignment a : push.push)
+	{
+		a.aDealer.tablesAssigned += 1;	// count number of assigned tables MAX = 1
+		
+		//switch (a.aTable.gameName){
+		//case std::string("BJ"):
+		//}
+	}
+
+
+
+	for (Dealer d : dealers)
+	{
+		d.tablesAssigned = 0;	// reset assigned tables to zero **reference**
+	}
 }
