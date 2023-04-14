@@ -43,14 +43,15 @@ void CalculateFitness(Push& push, std::vector<Dealer>& dealers)
 {
 	push.fitness = 0;			// initialize and/or reset to zero
 	
-	for (Assignment a : push.push)
-	{
-		a.aDealer.tablesAssigned += 1;	// count number of assigned tables MAX = 1
-		
-		//switch (a.aTable.gameName){
-		//case std::string("BJ"):
-		//}
-	}
+	//for (Assignment a : push.push)
+	//{
+	//	a.aDealer.tablesAssigned += 1;	// count number of assigned tables MAX = 1
+	//	
+	//	switch (a.aTable.gameName){
+	//	case Table::BJ:
+	//		if ()
+	//	}
+	//}
 
 
 
