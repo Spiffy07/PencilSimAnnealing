@@ -12,7 +12,7 @@ Table::Table(int numIn, Table::Games gameName)
 Table::Table(const Table& table)
 	:number(table.number), gameName(table.gameName)
 {
-	std::cout << "   Table object copied!" << std::endl;
+	std::cout << "    Table object copied!" << std::endl;
 }
 
 void Table::GenerateTables(std::vector<Table>& tablesIn)
@@ -69,7 +69,7 @@ Dealer::Dealer(const Dealer& dealer)
 	gameKnowledge(dealer.gameKnowledge), pushMinutes(dealer.pushMinutes),
 	tablesAssigned(0)
 {
-	std::cout << "Dealer object copied!" << std::endl;
+	std::cout << "    Dealer object copied!" << std::endl;
 }
 
 void Dealer::GenerateDealers(std::vector<Dealer>& dealersIn)
