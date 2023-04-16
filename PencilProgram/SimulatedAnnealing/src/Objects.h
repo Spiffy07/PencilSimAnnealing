@@ -51,10 +51,11 @@ class Assignment
 {
 public:
 	Table aTable;
-	Dealer aDealer;
+	Dealer* aDealerPtr;
 
 	Assignment() = delete;
 	Assignment(Table& t, Dealer& d);
+	Assignment(Table& t, Dealer* dPtr);
 };
 
 

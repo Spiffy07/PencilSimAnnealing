@@ -89,7 +89,12 @@ void Dealer::GenerateDealers(std::vector<Dealer>& dealersIn)
 }
 
 Assignment::Assignment(Table& t, Dealer& d) 
-	: aTable(t), aDealer(d)
+	: aTable(t), aDealerPtr(&d)
+{
+}
+
+Assignment::Assignment(Table& t, Dealer* dPtr) 
+	: aTable(t), aDealerPtr(dPtr)
 {
 }
 

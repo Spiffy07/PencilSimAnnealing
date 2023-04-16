@@ -9,9 +9,9 @@
 // static member declarations
 unsigned int Dealer::employeeNumberCounter;
 
-Push PopulateTables(const std::vector<Table>& tables, std::vector<Dealer>& dealers);
+Push PopulateTables(std::vector<Table>& tables, std::vector<Dealer>& dealers);
 void CalculateFitness(Push& push, std::vector<Dealer>& dealers);
-bool findGameKnowledge(const Table::Games& gameName, Dealer& dealer);
+bool findGameKnowledge(const Table::Games& gameName, Dealer* dealerPtr);
 
 
 int main()
@@ -31,11 +31,11 @@ int main()
 	return 0;
 }
 
-Push PopulateTables(const std::vector<Table>& tables, std::vector<Dealer>& dealers)
+Push PopulateTables(std::vector<Table>& tables, std::vector<Dealer>& dealers)
 {
 	Push p;
 	p.push.reserve(NUMBER_OF_TABLES);
-	for (Table t : tables)
+	for (Table& t : tables)
 	{
 		p.push.emplace_back(t, dealers[rand() % 10]);
 	}
@@ -47,28 +47,28 @@ void CalculateFitness(Push& push, std::vector<Dealer>& dealers)
 {
 	push.fitness = 0;			// initialize and/or reset to zero
 	
-	for (Assignment a : push.push) // ****** this copies instead or refers
+	for (Assignment& a : push.push)
 	{
 		// count number of assigned tables MAX = 1
-		a.aDealer.tablesAssigned += 1;	
-		//std::cout << a.aDealer.name << ": " << a.aDealer.tablesAssigned << std::endl;
+		a.aDealerPtr->tablesAssigned += 1;	
+		//std::cout << a.aDealerPtr->name << ": " << a.aDealerPtr->tablesAssigned << ", mem: " << (int)a.aDealerPtr << std::endl;
 		
 		// Game Knowledge check
 		switch (a.aTable.gameName){
 		case Table::BJ:
-			if (findGameKnowledge(Table::BJ, a.aDealer) 
+			if (findGameKnowledge(Table::BJ, a.aDealerPtr) 
 				? push.fitness += 3 : push.fitness -= 10);
 			break;
 		case Table::Rou:
-			if (findGameKnowledge(Table::Rou, a.aDealer)
+			if (findGameKnowledge(Table::Rou, a.aDealerPtr)
 				? push.fitness += 5 : push.fitness -= 10);
 			break;
 		case Table::MB:
-			if (findGameKnowledge(Table::MB, a.aDealer)
+			if (findGameKnowledge(Table::MB, a.aDealerPtr)
 				? push.fitness += 5 : push.fitness -= 10);
 			break;
 		case Table::Poker:
-			if (findGameKnowledge(Table::Poker, a.aDealer)
+			if (findGameKnowledge(Table::Poker, a.aDealerPtr)
 				? push.fitness += 5 : push.fitness -= 10);
 			break;
 		default:
@@ -76,20 +76,24 @@ void CalculateFitness(Push& push, std::vector<Dealer>& dealers)
 		}
 	} 
 
-	std::cout << "  Fitness: " << push.fitness << std::endl;
 
-
-	for (Dealer d : dealers)
+	for (Dealer& d : dealers)
 	{
 		std::cout << d.tablesAssigned << std::endl;
 		// reset assigned tables to zero **reference**
+
+		if (d.tablesAssigned > 1)
+			push.fitness -= (d.tablesAssigned - 1) * 50;	// -50 per extra assigned table
+
 		d.tablesAssigned = 0;	
 	}
+
+	//std::cout << "  Fitness: " << push.fitness << std::endl;
 }
 
-bool findGameKnowledge(const Table::Games& gameName, Dealer& dealer)
+bool findGameKnowledge(const Table::Games& gameName, Dealer* dealerPtr)
 {
-	for (Table::Games g : dealer.gameKnowledge)
+	for (Table::Games g : dealerPtr->gameKnowledge)
 	{
 		if (gameName == g) return true;
 	}
