@@ -67,7 +67,7 @@ Dealer::Dealer(std::string nameIn, std::vector<Table::Games> gameKnowledgeIn)
 Dealer::Dealer(const Dealer& dealer)
 	: name(dealer.name), employeeNumber(dealer.employeeNumber), 
 	gameKnowledge(dealer.gameKnowledge), pushMinutes(dealer.pushMinutes),
-	tablesAssigned(0)
+	tablesAssigned(dealer.tablesAssigned)
 {
 	std::cout << "    Dealer object copied!" << std::endl;
 }

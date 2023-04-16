@@ -47,10 +47,13 @@ void CalculateFitness(Push& push, std::vector<Dealer>& dealers)
 {
 	push.fitness = 0;			// initialize and/or reset to zero
 	
-	for (Assignment a : push.push)
+	for (Assignment a : push.push) // ****** this copies instead or refers
 	{
-		a.aDealer.tablesAssigned += 1;	// count number of assigned tables MAX = 1
+		// count number of assigned tables MAX = 1
+		a.aDealer.tablesAssigned += 1;	
+		//std::cout << a.aDealer.name << ": " << a.aDealer.tablesAssigned << std::endl;
 		
+		// Game Knowledge check
 		switch (a.aTable.gameName){
 		case Table::BJ:
 			if (findGameKnowledge(Table::BJ, a.aDealer) 
@@ -71,14 +74,16 @@ void CalculateFitness(Push& push, std::vector<Dealer>& dealers)
 		default:
 			std::cout << "Error: Invalid gameKnowledge fitness result!" << std::endl;
 		}
-	}
+	} 
 
 	std::cout << "  Fitness: " << push.fitness << std::endl;
 
 
 	for (Dealer d : dealers)
 	{
-		d.tablesAssigned = 0;	// reset assigned tables to zero **reference**
+		std::cout << d.tablesAssigned << std::endl;
+		// reset assigned tables to zero **reference**
+		d.tablesAssigned = 0;	
 	}
 }
 
