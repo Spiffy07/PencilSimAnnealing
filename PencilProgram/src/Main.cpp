@@ -1,10 +1,5 @@
 #include "Objects.h"
-
-//#include <fstream>	// for file output stretch
-
-// function declarations 
-//void GenerateTables(std::vector<Table>& tablesIn);
-//void GenerateDealers(std::vector<Dealer>& dealersIn);
+#include "Log.h"
 
 // static member declarations
 unsigned int Dealer::employeeNumberCounter;
@@ -16,6 +11,9 @@ bool findGameKnowledge(const Table::Games& gameName, Dealer* dealerPtr);
 
 int main()
 {
+	Log log;
+	log.SetLogLevel(Log::Error);
+
 	std::vector<Table> tables;	
 	std::vector<Dealer> dealers;
 	Table::GenerateTables(tables);
@@ -27,6 +25,7 @@ int main()
 	CalculateFitness(first, dealers);
 
 	std::cout << "   Program Successfully ran!" << std::endl;
+	log.LogInfo("Program Successfully ran!");
 	std::cin.get();
 	return 0;
 }
@@ -51,7 +50,7 @@ void CalculateFitness(Push& push, std::vector<Dealer>& dealers)
 	{
 		// count number of assigned tables MAX = 1
 		a.aDealerPtr->tablesAssigned += 1;	
-		//std::cout << a.aDealerPtr->name << ": " << a.aDealerPtr->tablesAssigned << ", mem: " << (int)a.aDealerPtr << std::endl;
+		//std::cout << a.aDealerPtr->name << ": " << a.aDealerPtr->tablesAssigned << std::endl;
 		
 		// Game Knowledge check
 		switch (a.aTable.gameName){
@@ -79,7 +78,7 @@ void CalculateFitness(Push& push, std::vector<Dealer>& dealers)
 
 	for (Dealer& d : dealers)
 	{
-		std::cout << d.tablesAssigned << std::endl;
+		//std::cout << d.tablesAssigned << std::endl;
 		// reset assigned tables to zero **reference**
 
 		if (d.tablesAssigned > 1)
@@ -88,7 +87,7 @@ void CalculateFitness(Push& push, std::vector<Dealer>& dealers)
 		d.tablesAssigned = 0;	
 	}
 
-	//std::cout << "  Fitness: " << push.fitness << std::endl;
+	std::cout << "  Fitness: " << push.fitness << std::endl;
 }
 
 bool findGameKnowledge(const Table::Games& gameName, Dealer* dealerPtr)
