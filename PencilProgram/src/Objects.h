@@ -1,6 +1,5 @@
 #include <string>
 #include <vector>
-#include <iostream>
 
 const int NUMBER_OF_TABLES = 10;
 const int NUMBER_OF_DEALERS = 10;

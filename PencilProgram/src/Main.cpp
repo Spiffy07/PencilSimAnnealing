@@ -1,8 +1,8 @@
+#include <iostream>
 #include "Objects.h"
-//#include "Log.h"				// this is the proper include, but confuses intellisense
-#include "../Log/src/Log.h"
+#include "LogExtern.h"
 
-const Log::LogLevel LOG_LEVEL = Log::Error;		// set log level here
+const Log::LogLevel LOG_LEVEL = Log::Info;		// set log level here
 Log LOG;
 
 // static member declarations
@@ -27,7 +27,9 @@ int main()
 
 	CalculateFitness(first, dealers);
 
-	LOG.LogInfo("Program Successfully ran!");
+	LOG.LogError("Program Successfully ran!");
+	LOG.LogWarning("Warning test");
+	LOG.LogInfo("Info test");
 	std::cin.get();
 	return 0;
 }

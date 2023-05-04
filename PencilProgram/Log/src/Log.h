@@ -1,6 +1,4 @@
 #pragma once
-
-#include <iostream>
 #include <string>
 
 class Log
@@ -19,5 +17,3 @@ public:
 	void LogWarning(std::string message);
 	void LogInfo(std::string message);
 };
-
-extern Log LOG;

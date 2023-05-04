@@ -1,6 +1,5 @@
-
+#include <iostream>
 #include "Log.h"
-
 
 void Log::SetLogLevel(LogLevel level)
 {

@@ -1,6 +1,5 @@
 #include "Objects.h"
-//#include "Log.h"				// this is the proper include, but confuses intellisense
-#include "../Log/src/Log.h"
+#include "LogExtern.h"
 
 const unsigned int STARTING_EMPLOYEE_NUMBER = 100000;
 
@@ -14,7 +13,6 @@ Table::Table(int numIn, Table::Games gameName)
 Table::Table(const Table& table)
 	:number(table.number), gameName(table.gameName)
 {
-	//std::cout << "  Table object copied!" << std::endl;
 	LOG.LogWarning("Table object copied!");
 }
 
@@ -72,7 +70,6 @@ Dealer::Dealer(const Dealer& dealer)
 	gameKnowledge(dealer.gameKnowledge), pushMinutes(dealer.pushMinutes),
 	tablesAssigned(dealer.tablesAssigned)
 {
-	//std::cout << "  Dealer object copied!" << std::endl;
 	LOG.LogWarning("Dealer object copied!");
 }
 
