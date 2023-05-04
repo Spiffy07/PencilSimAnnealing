@@ -1,5 +1,9 @@
 #include "Objects.h"
-#include "Log.h"
+//#include "Log.h"				// this is the proper include, but confuses intellisense
+#include "../Log/src/Log.h"
+
+const Log::LogLevel LOG_LEVEL = Log::Error;		// set log level here
+Log LOG;
 
 // static member declarations
 unsigned int Dealer::employeeNumberCounter;
@@ -11,8 +15,7 @@ bool findGameKnowledge(const Table::Games& gameName, Dealer* dealerPtr);
 
 int main()
 {
-	Log log;
-	log.SetLogLevel(Log::Error);
+	LOG.SetLogLevel(LOG_LEVEL);
 
 	std::vector<Table> tables;	
 	std::vector<Dealer> dealers;
@@ -24,8 +27,7 @@ int main()
 
 	CalculateFitness(first, dealers);
 
-	std::cout << "   Program Successfully ran!" << std::endl;
-	log.LogInfo("Program Successfully ran!");
+	LOG.LogInfo("Program Successfully ran!");
 	std::cin.get();
 	return 0;
 }
@@ -50,7 +52,7 @@ void CalculateFitness(Push& push, std::vector<Dealer>& dealers)
 	{
 		// count number of assigned tables MAX = 1
 		a.aDealerPtr->tablesAssigned += 1;	
-		//std::cout << a.aDealerPtr->name << ": " << a.aDealerPtr->tablesAssigned << std::endl;
+		LOG.LogInfo(a.aDealerPtr->name + ": " + std::to_string(a.aDealerPtr->tablesAssigned));
 		
 		// Game Knowledge check
 		switch (a.aTable.gameName){
@@ -71,14 +73,13 @@ void CalculateFitness(Push& push, std::vector<Dealer>& dealers)
 				? push.fitness += 5 : push.fitness -= 10);
 			break;
 		default:
-			std::cout << "Error: Invalid gameKnowledge fitness result!" << std::endl;
+			LOG.LogError("Error: Invalid gameKnowledge fitness result!");
 		}
 	} 
 
 
 	for (Dealer& d : dealers)
 	{
-		//std::cout << d.tablesAssigned << std::endl;
 		// reset assigned tables to zero **reference**
 
 		if (d.tablesAssigned > 1)
@@ -87,7 +88,7 @@ void CalculateFitness(Push& push, std::vector<Dealer>& dealers)
 		d.tablesAssigned = 0;	
 	}
 
-	std::cout << "  Fitness: " << push.fitness << std::endl;
+	LOG.LogInfo("Fitness: " + std::to_string(push.fitness));
 }
 
 bool findGameKnowledge(const Table::Games& gameName, Dealer* dealerPtr)

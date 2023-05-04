@@ -15,7 +15,9 @@ public:
 
 
 	void SetLogLevel(LogLevel level);
-	void LogError(const char* message);
-	void LogWarning(const char* message);
-	void LogInfo(const char* message);
+	void LogError(std::string message);
+	void LogWarning(std::string message);
+	void LogInfo(std::string message);
 };
+
+extern Log LOG;
