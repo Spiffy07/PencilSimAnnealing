@@ -61,7 +61,7 @@ class Push
 {
 public:
 	std::vector<Assignment> push;
-	int fitness;
+	int fitness = 0;
 
 	//Push() = delete;
 };
