@@ -18,8 +18,8 @@ int main()
 {
 	LOG.SetLogLevel(LOG_LEVEL);
 
-	const int SUCCESSFUL_CHANGE_LIMIT = 400;	// limit of successful changes per tempurature iteration
-	const int ATTEMPT_LIMIT = 10000;			// limit of attempts per tempurature iteration
+	const int SUCCESSFUL_CHANGE_LIMIT = 1000;	// limit of successful changes per tempurature iteration
+	const int ATTEMPT_LIMIT = 15000;			// limit of attempts per tempurature iteration
 	const double e = 2.718281828;
 	double tempurature = 2000;					// starting temp, higher increases randomization
 	int changeCount;
@@ -27,7 +27,7 @@ int main()
 	int attemptNoChange;	
 	double prob;			// random number between 0 and 1
 	double eCalc;			// ? Boltzman's distribution?
-	int bestFitness;		// highest found fitness
+	int bestFitness = 0;		// highest found fitness
 
 	std::vector<Table> tables;
 	std::vector<Dealer> dealers;
@@ -53,6 +53,7 @@ int main()
 			int oldFitness = first.fitness;				// fitness before change
 			Dealer* oldDealer = first.push[randTable].aDealerPtr;
 
+			if (first.fitness > bestFitness) bestFitness = first.fitness;
 			first.push[randTable].aDealerPtr = &dealers[newDealer];		// the change to be appraised
 
 			CalculateFitness(first, dealers);		// 'first' object has post-change fitness
@@ -72,12 +73,30 @@ int main()
 		}
 	} while (attemptNoChange != ATTEMPT_LIMIT);
 
-	LOG.LogError(std::to_string(first.fitness));
+	LOG.LogError("final Fitness: " + std::to_string(first.fitness));
+	LOG.LogWarning("Highest Fitness: " + std::to_string(bestFitness));
 
+	for (auto& p : first.push)
+	{
+		switch (p.aTable.gameName)
+		{
+		case Table::BJ:
+			LOG.LogWarning(std::to_string(p.aTable.number) + "     BJ     " + p.aDealerPtr->name);
+			break;
+		case Table::Rou:
+			LOG.LogWarning(std::to_string(p.aTable.number) + "     Rou    " + p.aDealerPtr->name);
+			break;
+		case Table::MB:
+			LOG.LogWarning(std::to_string(p.aTable.number) + "     MB     " + p.aDealerPtr->name);
+			break;
+		case Table::Poker:
+			LOG.LogWarning(std::to_string(p.aTable.number) + "     Poker  " + p.aDealerPtr->name);
+			break;
+		default:
+			LOG.LogError("Error: Invalid message in final Log");
+		}
+	}
 
-	LOG.LogError("Program Successfully ran!");
-	LOG.LogWarning("Warning test");
-	LOG.LogInfo("Info test");
 	std::cin.get();
 	return 0;
 }
@@ -110,19 +129,19 @@ void CalculateFitness(Push& push, std::vector<Dealer>& dealers)
 		switch (a.aTable.gameName){
 		case Table::BJ:
 			if (findGameKnowledge(Table::BJ, a.aDealerPtr) 
-				? push.fitness += 3 : push.fitness -= 15);
+				? push.fitness += 3 : push.fitness -= 25);
 			break;
 		case Table::Rou:
 			if (findGameKnowledge(Table::Rou, a.aDealerPtr)
-				? push.fitness += 5 : push.fitness -= 15);
+				? push.fitness += 3 : push.fitness -= 25);
 			break;
 		case Table::MB:
 			if (findGameKnowledge(Table::MB, a.aDealerPtr)
-				? push.fitness += 5 : push.fitness -= 15);
+				? push.fitness += 5 : push.fitness -= 25);
 			break;
 		case Table::Poker:
 			if (findGameKnowledge(Table::Poker, a.aDealerPtr)
-				? push.fitness += 5 : push.fitness -= 15);
+				? push.fitness += 5 : push.fitness -= 25);
 			break;
 		default:
 			LOG.LogError("Error: Invalid gameKnowledge fitness result!");

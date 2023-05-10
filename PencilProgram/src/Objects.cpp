@@ -29,7 +29,17 @@ void Table::GenerateTables(std::vector<Table>& tablesIn)
 	tablesIn.emplace_back(107, Poker);
 	tablesIn.emplace_back(108, Poker);
 	tablesIn.emplace_back(109, MB);
-	tablesIn.emplace_back(110, Rou);
+	tablesIn.emplace_back(110, MB);
+	tablesIn.emplace_back(111, MB);
+	tablesIn.emplace_back(112, MB);
+	tablesIn.emplace_back(113, Rou);
+	tablesIn.emplace_back(114, Rou);
+	tablesIn.emplace_back(115, BJ);
+	tablesIn.emplace_back(116, BJ);
+	tablesIn.emplace_back(117, BJ);
+	tablesIn.emplace_back(118, BJ);
+	tablesIn.emplace_back(119, Poker);
+	tablesIn.emplace_back(120, Poker);
 }
 
 
@@ -80,8 +90,18 @@ void Dealer::GenerateDealers(std::vector<Dealer>& dealersIn)
 	dealersIn.emplace_back("Thomas", std::vector<Table::Games>{Table::BJ, Table::Rou, Table::MB, Table::Poker});
 	dealersIn.emplace_back("Clarissa", std::vector<Table::Games>{Table::BJ, Table::Rou, Table::MB, Table::Poker});
 	dealersIn.emplace_back("Tiffany", std::vector<Table::Games>{Table::BJ, Table::Rou, Table::MB, Table::Poker});
-	dealersIn.emplace_back("Chris", std::vector<Table::Games>{Table::BJ, Table::Poker});
 	dealersIn.emplace_back("Alex", std::vector<Table::Games>{Table::BJ, Table::Rou, Table::MB, Table::Poker});
+	dealersIn.emplace_back("Chris");
+	dealersIn.emplace_back("John", std::vector<Table::Games>{Table::BJ, Table::Rou, Table::MB, Table::Poker});
+	dealersIn.emplace_back("Ryan", std::vector<Table::Games>{Table::BJ, Table::Rou, Table::MB, Table::Poker});
+	dealersIn.emplace_back();
+	dealersIn.emplace_back();
+	dealersIn.emplace_back();
+	dealersIn.emplace_back();
+	dealersIn.emplace_back();
+	dealersIn.emplace_back();
+	dealersIn.emplace_back();
+	dealersIn.emplace_back();
 	dealersIn.emplace_back();
 	dealersIn.emplace_back();
 	dealersIn.emplace_back();
