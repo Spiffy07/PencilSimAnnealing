@@ -13,7 +13,9 @@ Table::Table(int numIn, Table::Games gameName)
 Table::Table(const Table& table)
 	:number(table.number), gameName(table.gameName)
 {
+#if PEN_DEBUG
 	LOG.LogWarning("Table object copied!");
+#endif
 }
 
 void Table::GenerateTables(std::vector<Table>& tablesIn)
@@ -80,7 +82,9 @@ Dealer::Dealer(const Dealer& dealer)
 	gameKnowledge(dealer.gameKnowledge), pushMinutes(dealer.pushMinutes),
 	tablesAssigned(dealer.tablesAssigned)
 {
+#if PEN_DEBUG
 	LOG.LogWarning("Dealer object copied!");
+#endif
 }
 
 void Dealer::GenerateDealers(std::vector<Dealer>& dealersIn)

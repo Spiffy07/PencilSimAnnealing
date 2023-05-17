@@ -1,5 +1,6 @@
 #include <string>
 #include <vector>
+//#define PEN_DEBUG 1
 
 const int NUMBER_OF_TABLES = 20;
 const int NUMBER_OF_DEALERS = 20;

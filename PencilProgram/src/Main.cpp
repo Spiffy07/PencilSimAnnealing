@@ -3,8 +3,11 @@
 #include "Objects.h"
 #include "LogExtern.h"
 
+
+#if PEN_DEBUG
 const Log::LogLevel LOG_LEVEL = Log::Info;		// set log level here
 Log LOG;
+#endif
 
 // static member declarations
 unsigned int Dealer::employeeNumberCounter;
@@ -16,7 +19,9 @@ bool findGameKnowledge(const Table::Games& gameName, Dealer* dealerPtr);
 
 int main()
 {
+#if PEN_DEBUG
 	LOG.SetLogLevel(LOG_LEVEL);
+#endif
 
 	const int SUCCESSFUL_CHANGE_LIMIT = 1000;	// limit of successful changes per tempurature iteration
 	const int ATTEMPT_LIMIT = 15000;			// limit of attempts per tempurature iteration
@@ -73,9 +78,10 @@ int main()
 		}
 	} while (attemptNoChange != ATTEMPT_LIMIT);
 
+#if PEN_DEBUG
 	LOG.LogError("final Fitness: " + std::to_string(first.fitness));
 	LOG.LogWarning("Highest Fitness: " + std::to_string(bestFitness));
-
+	
 	for (auto& p : first.push)
 	{
 		switch (p.aTable.gameName)
@@ -96,7 +102,9 @@ int main()
 			LOG.LogError("Error: Invalid message in final Log");
 		}
 	}
+#endif
 
+	std::cout << "End of Program! Final Fitness: " << first.fitness << std::endl;
 	std::cin.get();
 	return 0;
 }
@@ -144,7 +152,10 @@ void CalculateFitness(Push& push, std::vector<Dealer>& dealers)
 				? push.fitness += 5 : push.fitness -= 25);
 			break;
 		default:
+#if PEN_DEBUG
 			LOG.LogError("Error: Invalid gameKnowledge fitness result!");
+#endif
+			break;
 		}
 	} 
 
@@ -154,7 +165,9 @@ void CalculateFitness(Push& push, std::vector<Dealer>& dealers)
 			push.fitness -= (d.tablesAssigned - 1) * 50;	// -50 per extra assigned table
 	}
 
+#if PEN_DEBUG
 	LOG.LogInfo("Fitness: " + std::to_string(push.fitness));
+#endif
 }
 
 bool findGameKnowledge(const Table::Games& gameName, Dealer* dealerPtr)
