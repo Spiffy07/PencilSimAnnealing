@@ -1,4 +1,5 @@
 #include <iostream>
+#include <thread>
 //#include <cmath>
 #include "Objects.h"
 #include "LogExtern.h"
@@ -16,17 +17,20 @@ Push PopulateTables(std::vector<Table>& tables, std::vector<Dealer>& dealers);
 void CalculateFitness(Push& push, std::vector<Dealer>& dealers);
 bool FindGameKnowledge(const Table::Games& gameName, Dealer* dealerPtr);
 void SimulateAnnealing(std::vector<Table>& tablesIn, std::vector<Dealer>& dealersIn, Push& pushIn);
+void PrintPush(Push& pushIn);
 
+static const int THREAD_COUNT = 8;
 static const int SUCCESSFUL_CHANGE_LIMIT = 1000;	// limit of successful changes per tempurature iteration
-static const int ATTEMPT_LIMIT = 15000;			// limit of attempts per tempurature iteration
+static const int ATTEMPT_LIMIT = 15000;				// limit of attempts per tempurature iteration
 static const double e = 2.718281828;
-static double tempurature = 2000;					// starting temp, higher increases randomization
-static int changeCount;
-static int attemptCount;
-static int attemptNoChange;
-static double prob;			// random number between 0 and 1
-static double eCalc;			// ? Boltzman's distribution?
-static int bestFitness = 0;		// highest found fitness
+static const double STARTING_TEMPURATURE = 2000;	// starting temp, higher increases randomization
+static int bestFitness = 0;							// highest found fitness
+static bool calcFitnessLock = false;
+
+			/*	********* each thread will change the above variables, making them not fully operational
+				Need to give each thread a copy of the variables above
+				Also this doesnt speed up the process of one instance of SimulateAnnealing, 
+				it makes several threads that do its own copy */       
 
 int main()
 {
@@ -36,16 +40,34 @@ int main()
 
 	std::vector<Table> tables;
 	std::vector<Dealer> dealers;
+	std::vector<Push> results;
+	std::vector<std::thread> threads;
 	Table::GenerateTables(tables);
 	Dealer::GenerateDealers(dealers);
 
 	srand(time(0));
+	results.reserve(THREAD_COUNT);									// use THREAD_COUNT
+	threads.reserve(THREAD_COUNT);
 	Push first = PopulateTables(tables, dealers);
+
 	CalculateFitness(first, dealers);
+	for (int i = 0; i < THREAD_COUNT; i++)
+		results.push_back(first);					// copy original Push to prevent scoping issue
 
-	SimulateAnnealing(tables, dealers, first);
+	for (int i = 0; i < THREAD_COUNT; i++)
+	{
+		threads.emplace_back([&tables, &dealers, &results, i]() {SimulateAnnealing(tables, dealers, results[i]); });
+	}
 
-	std::cout << "End of Program! Final Fitness: " << first.fitness << std::endl;
+	for (auto& t : threads) t.join();
+
+	for (auto& p : results)
+	{
+		PrintPush(p);
+		//CalculateFitness(p, dealers);				// used for debugging
+		//PrintPush(p);
+	}
+	LOG.LogWarning("Highest Fitness: " + std::to_string(bestFitness));
 	std::cin.get();
 	return 0;
 }
@@ -65,8 +87,16 @@ Push PopulateTables(std::vector<Table>& tables, std::vector<Dealer>& dealers)
 
 void CalculateFitness(Push& push, std::vector<Dealer>& dealers)
 {
+	using namespace std::chrono_literals;
+	Timer timer;
+	while (calcFitnessLock)
+	{
+		std::this_thread::sleep_for(100ms);
+	}
+	calcFitnessLock = true;
+
 	push.fitness = 0;			// initialize and/or reset to zero
-	for (Dealer& d : dealers) d.tablesAssigned = 0;		// reset assigned tables to zero
+	for (Dealer& d : dealers) d.tablesAssigned = 0;		// reset assigned tables to zero ***********
 
 	for (Assignment& a : push.push)
 	{
@@ -82,7 +112,7 @@ void CalculateFitness(Push& push, std::vector<Dealer>& dealers)
 			break;
 		case Table::Rou:
 			if (FindGameKnowledge(Table::Rou, a.aDealerPtr)
-				? push.fitness += 3 : push.fitness -= 25);
+				? push.fitness += 5 : push.fitness -= 25);
 			break;
 		case Table::MB:
 			if (FindGameKnowledge(Table::MB, a.aDealerPtr)
@@ -90,11 +120,11 @@ void CalculateFitness(Push& push, std::vector<Dealer>& dealers)
 			break;
 		case Table::Poker:
 			if (FindGameKnowledge(Table::Poker, a.aDealerPtr)
-				? push.fitness += 5 : push.fitness -= 25);
+				? push.fitness += 3 : push.fitness -= 25);
 			break;
 		default:
 #if PEN_DEBUG
-			LOG.LogError("Error: Invalid gameKnowledge fitness result!");		// runs literally every iteration
+			LOG.LogError("Error: Invalid gameKnowledge fitness result!");
 #endif
 			break;
 		}
@@ -105,9 +135,10 @@ void CalculateFitness(Push& push, std::vector<Dealer>& dealers)
 		if (d.tablesAssigned > 1)
 			push.fitness -= (d.tablesAssigned - 1) * 50;	// -50 per extra assigned table
 	}
+	calcFitnessLock = false;
 
 #if PEN_DEBUG
-	LOG.LogInfo("Fitness: " + std::to_string(push.fitness));
+	LOG.LogInfo("Fitness: " + std::to_string(push.fitness));		// runs literally every iteration
 #endif
 }
 
@@ -122,19 +153,26 @@ bool FindGameKnowledge(const Table::Games& gameName, Dealer* dealerPtr)
 
 void SimulateAnnealing(std::vector<Table>& tablesIn, std::vector<Dealer>& dealersIn, Push& pushIn)
 {
+	int changeCount;
+	int attemptCount;
+	int attemptNoChange;
+	double prob;			// random number between 0 and 1
+	double eCalc;			// ? Boltzman's distribution?
+	double tempurature = STARTING_TEMPURATURE;
+
 	do
 	{
 		tempurature = tempurature * .95;
-		attemptNoChange = 0;
 		changeCount = 0;
 		attemptCount = 0;
+		attemptNoChange = 0;
 
 		while (changeCount < SUCCESSFUL_CHANGE_LIMIT
 			&& attemptCount < ATTEMPT_LIMIT)
 		{
-			int randTable = rand() % tablesIn.size();		// select which table to change
-			int newDealer = rand() % dealersIn.size();	// select a random dealer
-			int oldFitness = pushIn.fitness;				// fitness before change
+			int randTable = rand() % tablesIn.size();			// select which table to change
+			int newDealer = rand() % dealersIn.size();			// select a random dealer
+			int oldFitness = pushIn.fitness;					// fitness before change
 			Dealer* oldDealer = pushIn.push[randTable].aDealerPtr;
 
 			if (pushIn.fitness > bestFitness) bestFitness = pushIn.fitness;
@@ -145,26 +183,30 @@ void SimulateAnnealing(std::vector<Table>& tablesIn, std::vector<Dealer>& dealer
 			prob = ((double)rand() / (RAND_MAX));		// random number between 0 and 1
 			eCalc = pow(e, ((pushIn.fitness - oldFitness) / tempurature));
 
-			if (prob < eCalc && pushIn.fitness != oldFitness)	// change accepted
+			if (prob < eCalc && pushIn.fitness != oldFitness)		// change accepted
 				changeCount++;
 			else
 			{
 				pushIn.fitness = oldFitness;						// reset fitness
-				pushIn.push[randTable].aDealerPtr = oldDealer;	// reset dealer
+				pushIn.push[randTable].aDealerPtr = oldDealer;		// reset dealer
 				attemptNoChange++;
 			}
 			attemptCount++;
 		}
 #if PEN_DEBUG
+		std::cout << std::this_thread::get_id() << ": ";
 		LOG.LogWarning(std::to_string(pushIn.fitness));
 #endif
-	} while (attemptNoChange != ATTEMPT_LIMIT);
+	} while (attemptNoChange < ATTEMPT_LIMIT);
+}
 
+void PrintPush(Push& p)
+{
 #if PEN_DEBUG
-	LOG.LogError("final Fitness: " + std::to_string(pushIn.fitness));
-	LOG.LogWarning("Highest Fitness: " + std::to_string(bestFitness));
+	LOG.LogError("final Fitness: " + std::to_string(p.fitness));
+	//LOG.LogWarning("Highest Fitness: " + std::to_string(bestFitness));
 
-	for (auto& p : pushIn.push)
+	for (auto& p : p.push)
 	{
 		switch (p.aTable.gameName)
 		{

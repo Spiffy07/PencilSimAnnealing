@@ -123,3 +123,19 @@ Assignment::Assignment(Table& t, Dealer* dPtr)
 {
 }
 
+
+Timer::Timer()
+{
+	start = std::chrono::high_resolution_clock::now();
+	duration = start - start;
+}
+
+Timer::~Timer()
+{
+	end = std::chrono::high_resolution_clock::now();
+	duration = end - start;
+	float ms = duration.count() * 1000.0f;
+
+	LOG.LogInfo("Timer: " + std::to_string(ms) + "ms");
+	//std::cout << "Timer: " << duration.count() << "\n";
+}

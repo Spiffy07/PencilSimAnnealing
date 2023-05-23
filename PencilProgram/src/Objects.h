@@ -1,5 +1,6 @@
 #include <string>
 #include <vector>
+#include <chrono>
 //#define PEN_DEBUG 1
 
 const int NUMBER_OF_TABLES = 20;
@@ -65,4 +66,15 @@ public:
 	int fitness = 0;
 
 	//Push() = delete;
+};
+
+
+
+struct Timer
+{
+	std::chrono::time_point<std::chrono::steady_clock> start, end;
+	std::chrono::duration<float> duration;
+
+	Timer();
+	~Timer();
 };
