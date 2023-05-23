@@ -19,7 +19,7 @@ bool FindGameKnowledge(const Table::Games& gameName, Dealer* dealerPtr);
 void SimulateAnnealing(std::vector<Table>& tablesIn, std::vector<Dealer>& dealersIn, Push& pushIn);
 void PrintPush(Push& pushIn);
 
-static const int THREAD_COUNT = 8;
+static const int THREAD_COUNT = 10;
 static const int SUCCESSFUL_CHANGE_LIMIT = 1000;	// limit of successful changes per tempurature iteration
 static const int ATTEMPT_LIMIT = 15000;				// limit of attempts per tempurature iteration
 static const double e = 2.718281828;
@@ -27,10 +27,6 @@ static const double STARTING_TEMPURATURE = 2000;	// starting temp, higher increa
 static int bestFitness = 0;							// highest found fitness
 static bool calcFitnessLock = false;
 
-			/*	********* each thread will change the above variables, making them not fully operational
-				Need to give each thread a copy of the variables above
-				Also this doesnt speed up the process of one instance of SimulateAnnealing, 
-				it makes several threads that do its own copy */       
 
 int main()
 {
@@ -46,16 +42,14 @@ int main()
 	Dealer::GenerateDealers(dealers);
 
 	srand(time(0));
-	results.reserve(THREAD_COUNT);									// use THREAD_COUNT
+	results.reserve(THREAD_COUNT);					
 	threads.reserve(THREAD_COUNT);
 	Push first = PopulateTables(tables, dealers);
 
 	CalculateFitness(first, dealers);
 	for (int i = 0; i < THREAD_COUNT; i++)
-		results.push_back(first);					// copy original Push to prevent scoping issue
-
-	for (int i = 0; i < THREAD_COUNT; i++)
 	{
+		results.push_back(first);					// copy original Push to prevent scoping issue
 		threads.emplace_back([&tables, &dealers, &results, i]() {SimulateAnnealing(tables, dealers, results[i]); });
 	}
 
@@ -64,8 +58,6 @@ int main()
 	for (auto& p : results)
 	{
 		PrintPush(p);
-		//CalculateFitness(p, dealers);				// used for debugging
-		//PrintPush(p);
 	}
 	LOG.LogWarning("Highest Fitness: " + std::to_string(bestFitness));
 	std::cin.get();
@@ -91,7 +83,7 @@ void CalculateFitness(Push& push, std::vector<Dealer>& dealers)
 	Timer timer;
 	while (calcFitnessLock)
 	{
-		std::this_thread::sleep_for(100ms);
+		std::this_thread::sleep_for(5ms);
 	}
 	calcFitnessLock = true;
 
@@ -194,7 +186,8 @@ void SimulateAnnealing(std::vector<Table>& tablesIn, std::vector<Dealer>& dealer
 			attemptCount++;
 		}
 #if PEN_DEBUG
-		std::cout << std::this_thread::get_id() << ": ";
+		if (LOG_LEVEL > Log::Error)
+			std::cout << std::this_thread::get_id() << ": ";
 		LOG.LogWarning(std::to_string(pushIn.fitness));
 #endif
 	} while (attemptNoChange < ATTEMPT_LIMIT);
