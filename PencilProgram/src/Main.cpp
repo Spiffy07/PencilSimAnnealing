@@ -20,10 +20,10 @@ void SimulateAnnealing(std::vector<Table>& tablesIn, std::vector<Dealer>& dealer
 void PrintPush(Push& pushIn);
 
 static const int THREAD_COUNT = 10;
-static const int SUCCESSFUL_CHANGE_LIMIT = 1000;	// limit of successful changes per tempurature iteration
-static const int ATTEMPT_LIMIT = 15000;				// limit of attempts per tempurature iteration
+static const int SUCCESSFUL_CHANGE_LIMIT = 2000;	// limit of successful changes per tempurature iteration
+static const int ATTEMPT_LIMIT = 50000;				// limit of attempts per tempurature iteration
 static const double e = 2.718281828;
-static const double STARTING_TEMPURATURE = 2000;	// starting temp, higher increases randomization
+static const double STARTING_TEMPURATURE = 5000;	// starting temp, higher increases randomization
 static int bestFitness = 0;							// highest found fitness
 static bool calcFitnessLock = false;
 
@@ -55,11 +55,19 @@ int main()
 
 	for (auto& t : threads) t.join();
 
+#if PEN_DEBUG
 	for (auto& p : results)
 	{
 		PrintPush(p);
 	}
 	LOG.LogWarning("Highest Fitness: " + std::to_string(bestFitness));
+#else
+	for (auto& p : results)
+		std::cout << std::to_string(p.fitness) + "\n";
+	std::cout << "    Best fitness: " << std::to_string(bestFitness) + "\n";
+#endif
+
+	std::cout << "End of Program\n";
 	std::cin.get();
 	return 0;
 }

@@ -136,6 +136,8 @@ Timer::~Timer()
 	duration = end - start;
 	float ms = duration.count() * 1000.0f;
 
+#if PEN_DEBUG
 	LOG.LogInfo("Timer: " + std::to_string(ms) + "ms");
+#endif
 	//std::cout << "Timer: " << duration.count() << "\n";
 }
