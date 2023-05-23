@@ -1,6 +1,11 @@
 #include "Objects.h"
 #include "LogExtern.h"
 
+#if PEN_DEBUG
+#else
+#include <iostream>
+#endif
+
 const unsigned int STARTING_EMPLOYEE_NUMBER = 100000;
 
 
@@ -134,10 +139,11 @@ Timer::~Timer()
 {
 	end = std::chrono::high_resolution_clock::now();
 	duration = end - start;
-	float ms = duration.count() * 1000.0f;
+	float s = duration.count();
 
 #if PEN_DEBUG
-	LOG.LogInfo("Timer: " + std::to_string(ms) + "ms");
+	LOG.LogError("Timer: " + std::to_string(s) + "s");
+#else
+	std::cout << "Timer: " + std::to_string(s) + "s\n";
 #endif
-	//std::cout << "Timer: " << duration.count() << "\n";
 }

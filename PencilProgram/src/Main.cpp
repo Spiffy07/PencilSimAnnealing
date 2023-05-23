@@ -19,7 +19,7 @@ bool FindGameKnowledge(const Table::Games& gameName, Dealer* dealerPtr);
 void SimulateAnnealing(std::vector<Table>& tablesIn, std::vector<Dealer>& dealersIn, Push& pushIn);
 void PrintPush(Push& pushIn);
 
-static const int THREAD_COUNT = 10;
+static const int THREAD_COUNT = 8;
 static const int SUCCESSFUL_CHANGE_LIMIT = 2000;	// limit of successful changes per tempurature iteration
 static const int ATTEMPT_LIMIT = 50000;				// limit of attempts per tempurature iteration
 static const double e = 2.718281828;
@@ -30,6 +30,7 @@ static bool calcFitnessLock = false;
 
 int main()
 {
+	Timer t;
 #if PEN_DEBUG
 	LOG.SetLogLevel(LOG_LEVEL);
 #endif
@@ -67,6 +68,7 @@ int main()
 	std::cout << "    Best fitness: " << std::to_string(bestFitness) + "\n";
 #endif
 
+	t.~Timer();
 	std::cout << "End of Program\n";
 	std::cin.get();
 	return 0;
@@ -88,7 +90,7 @@ Push PopulateTables(std::vector<Table>& tables, std::vector<Dealer>& dealers)
 void CalculateFitness(Push& push, std::vector<Dealer>& dealers)
 {
 	using namespace std::chrono_literals;
-	Timer timer;
+	//Timer timer;													// Runs everytime
 	while (calcFitnessLock)
 	{
 		std::this_thread::sleep_for(5ms);
@@ -194,7 +196,7 @@ void SimulateAnnealing(std::vector<Table>& tablesIn, std::vector<Dealer>& dealer
 			attemptCount++;
 		}
 #if PEN_DEBUG
-		if (LOG_LEVEL > Log::Error)
+		if (LOG_LEVEL > Log::Warning)
 			std::cout << std::this_thread::get_id() << ": ";
 		LOG.LogWarning(std::to_string(pushIn.fitness));
 #endif
