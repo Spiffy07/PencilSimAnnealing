@@ -19,7 +19,7 @@ static bool FindGameKnowledge(const Table::Games& gameName, Dealer* dealerPtr);
 static void SimulateAnnealing(std::vector<Table>& tablesIn, std::vector<Dealer>& dealersIn, Push& pushIn);
 static void PrintPush(Push& pushIn);
 
-static const int s_THREAD_COUNT = 8;
+static const int s_THREAD_COUNT = 16;
 static const int s_SUCCESSFUL_CHANGE_LIMIT = 2000;	// limit of successful changes per tempurature iteration
 static const int s_ATTEMPT_LIMIT = 50000;			// limit of attempts per tempurature iteration
 static const double s_STARTING_TEMPURATURE = 5000;	// starting temp, higher increases randomization
@@ -177,7 +177,8 @@ static void SimulateAnnealing(std::vector<Table>& tablesIn, std::vector<Dealer>&
 			int oldFitness = pushIn.fitness;					// fitness before change
 			Dealer* oldDealer = pushIn.push[randTable].aDealerPtr;
 
-			if (pushIn.fitness > s_bestFitness) s_bestFitness = pushIn.fitness;
+			if (pushIn.fitness > s_bestFitness) 
+				s_bestFitness = pushIn.fitness;
 			pushIn.push[randTable].aDealerPtr = &dealersIn[newDealer];		// the change to be appraised
 
 			CalculateFitness(pushIn, dealersIn);		// 'pushIn' object has post-change fitness
