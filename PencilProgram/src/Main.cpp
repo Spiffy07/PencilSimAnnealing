@@ -1,6 +1,6 @@
-#include <iostream>
-#include <thread>
-//#include <cmath>
+#include "pch.h"
+//#include <iostream>
+//#include <thread>
 #include "Objects.h"
 #include "LogExtern.h"
 
@@ -19,7 +19,7 @@ static bool FindGameKnowledge(const Table::Games& gameName, Dealer* dealerPtr);
 static void SimulateAnnealing(std::vector<Table>& tablesIn, std::vector<Dealer>& dealersIn, Push& pushIn);
 static void PrintPush(Push& pushIn);
 
-static const int s_THREAD_COUNT = 16;
+static const int s_THREAD_COUNT = 8;
 static const int s_SUCCESSFUL_CHANGE_LIMIT = 2000;	// limit of successful changes per tempurature iteration
 static const int s_ATTEMPT_LIMIT = 50000;			// limit of attempts per tempurature iteration
 static const double s_STARTING_TEMPURATURE = 5000;	// starting temp, higher increases randomization

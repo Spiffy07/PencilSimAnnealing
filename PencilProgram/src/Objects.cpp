@@ -1,3 +1,4 @@
+#include "pch.h"
 #include "Objects.h"
 #include "LogExtern.h"
 
