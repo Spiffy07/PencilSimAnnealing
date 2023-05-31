@@ -138,13 +138,18 @@ Timer::Timer()
 
 Timer::~Timer()
 {
+
+}
+
+void Timer::endTimer()
+{
 	end = std::chrono::high_resolution_clock::now();
 	duration = end - start;
-	float s = duration.count();
+	float s = duration.count() * 1000;
 
 #if PEN_DEBUG
-	LOG.LogError("Timer: " + std::to_string(s) + "s");
+	LOG.LogError("Timer: " + std::to_string(s) + "ms");
 #else
-	std::cout << "Timer: " + std::to_string(s) + "s\n";
+	std::cout << "Timer: " + std::to_string(s) + "ms\n";
 #endif
 }

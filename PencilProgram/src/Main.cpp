@@ -82,7 +82,7 @@ int main()
 	std::cout << "    Best fitness: " << std::to_string(s_bestFitness) + "\n";
 #endif
 
-	t.~Timer();
+	t.endTimer();
 	std::cout << "End of Program\n";
 	std::cin.get();
 	return 0;
