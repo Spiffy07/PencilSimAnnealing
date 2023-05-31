@@ -4,6 +4,8 @@
 #include "Objects.h"
 #include "LogExtern.h"
 
+#include <future>
+#include <mutex>
 
 #if PEN_DEBUG
 const Log::LogLevel LOG_LEVEL = Log::Warning;		// set log level here
@@ -26,7 +28,7 @@ static const double s_STARTING_TEMPURATURE = 5000;	// starting temp, higher incr
 static const double s_e = 2.718281828;
 static int s_bestFitness = 0;						// highest found fitness
 static bool s_calcFitnessLock = false;
-
+static std::mutex s_DealersMutex;
 
 int main()
 {
@@ -39,22 +41,33 @@ int main()
 	std::vector<Dealer> dealers;
 	std::vector<Push> results;
 	std::vector<std::thread> threads;
+	std::vector<std::future<void>> futures;
+
 	Table::GenerateTables(tables);
 	Dealer::GenerateDealers(dealers);
 
 	srand(time(0));
-	results.reserve(s_THREAD_COUNT);					
-	threads.reserve(s_THREAD_COUNT);
+	//results.reserve(s_THREAD_COUNT);					
+	//threads.reserve(s_THREAD_COUNT);
+	futures.reserve(s_THREAD_COUNT);
+
 	Push first = PopulateTables(tables, dealers);
 
 	CalculateFitness(first, dealers);
 	for (int i = 0; i < s_THREAD_COUNT; i++)
 	{
 		results.push_back(first);					// copy original Push to prevent scoping issue
-		threads.emplace_back([&tables, &dealers, &results, i]() {SimulateAnnealing(tables, dealers, results[i]); });
+	}
+	for (int i = 0; i < s_THREAD_COUNT; i++)
+	{
+		//threads.emplace_back([&tables, &dealers, &results, i]() {SimulateAnnealing(tables, dealers, results[i]); });
+		std::cout << "\n" << "thread: " << i << "\n";
+		futures.emplace_back(std::async(std::launch::async, SimulateAnnealing, tables, dealers, std::ref(results[i])));
 	}
 
-	for (auto& t : threads) t.join();
+	//for (auto& t : threads) t.join();
+	for (auto& f : futures)
+		f.wait();
 
 #if PEN_DEBUG
 	for (auto& p : results)
@@ -89,13 +102,19 @@ static Push PopulateTables(std::vector<Table>& tables, std::vector<Dealer>& deal
 
 static void CalculateFitness(Push& push, std::vector<Dealer>& dealers)
 {
-	using namespace std::chrono_literals;
+			/* due to std::async passing by value,
+				the std::vector<Dealer>& needed for the function call was
+				actually passed by value (copied) 
+				meaning no lock or mutex is needed*/
+	//std::lock_guard<std::mutex> lock(s_DealersMutex);	
+	
+	//using namespace std::chrono_literals;
 	//Timer timer;													// Runs everytime
-	while (s_calcFitnessLock)
-	{
-		std::this_thread::sleep_for(5ms);
-	}
-	s_calcFitnessLock = true;
+	//while (s_calcFitnessLock)
+	//{
+	//	std::this_thread::sleep_for(5ms);
+	//}
+	//s_calcFitnessLock = true;
 
 	push.fitness = 0;			// initialize and/or reset to zero
 	for (Dealer& d : dealers) d.tablesAssigned = 0;		// reset assigned tables to zero ***********
@@ -137,7 +156,7 @@ static void CalculateFitness(Push& push, std::vector<Dealer>& dealers)
 		if (d.tablesAssigned > 1)
 			push.fitness -= (d.tablesAssigned - 1) * 50;	// -50 per extra assigned table
 	}
-	s_calcFitnessLock = false;
+	//s_calcFitnessLock = false;
 
 #if PEN_DEBUG
 	LOG.LogInfo("Fitness: " + std::to_string(push.fitness));		// runs literally every iteration
