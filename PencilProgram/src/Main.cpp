@@ -65,7 +65,7 @@ int main()
 #else
 	for (auto& p : results)
 		std::cout << std::to_string(p.fitness) + "\n";
-	std::cout << "    Best fitness: " << std::to_string(bestFitness) + "\n";
+	std::cout << "    Best fitness: " << std::to_string(s_bestFitness) + "\n";
 #endif
 
 	t.~Timer();
