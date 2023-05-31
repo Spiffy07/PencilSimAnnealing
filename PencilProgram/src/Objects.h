@@ -78,4 +78,6 @@ struct Timer
 
 	Timer();
 	~Timer();
+
+	void endTimer();
 };

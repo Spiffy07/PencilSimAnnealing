@@ -22,7 +22,7 @@ static bool FindGameKnowledge(const Table::Games& gameName, Dealer* dealerPtr);
 static void SimulateAnnealing(std::vector<Table>& tablesIn, std::vector<Dealer>& dealersIn, Push& pushIn);
 static void PrintPush(Push& pushIn);
 
-static const int s_THREAD_COUNT = 8;
+static const int s_THREAD_COUNT = 1;
 static const int s_SUCCESSFUL_CHANGE_LIMIT = 2000;	// limit of successful changes per tempurature iteration
 static const int s_ATTEMPT_LIMIT = 50000;			// limit of attempts per tempurature iteration
 static const double s_STARTING_TEMPURATURE = 5000;	// starting temp, higher increases randomization
@@ -82,7 +82,7 @@ int main()
 	std::cout << "    Best fitness: " << std::to_string(s_bestFitness) + "\n";
 #endif
 
-	t.~Timer();
+	t.endTimer();
 	std::cout << "End of Program\n";
 	std::cin.get();
 	return 0;
@@ -184,6 +184,7 @@ static void SimulateAnnealing(std::vector<Table>& tablesIn, std::vector<Dealer>&
 
 	do
 	{
+		Timer sa;
 		tempurature = tempurature * .95;
 		changeCount = 0;
 		attemptCount = 0;
