@@ -2,36 +2,36 @@
 
 
 
-Timer::Timer()
-{
-	start = std::chrono::high_resolution_clock::now();
-	duration = start - start;
-}
-
-Timer::~Timer()
-{
-
-}
-
-void Timer::endTimer()
-{
-	end = std::chrono::high_resolution_clock::now();
-	duration = end - start;
-	float s = duration.count() * 1000;
-
-#if PEN_DEBUG
-	LOG.LogError("Timer: " + std::to_string(s) + "ms");
-#else
-	std::cout << "Timer: " + std::to_string(s) + "ms\n";
-#endif
-}
+//Timer::Timer()
+//{
+//	start = std::chrono::high_resolution_clock::now();
+//	duration = start - start;
+//}
+//
+//Timer::~Timer()
+//{
+//
+//}
+//
+//void Timer::endTimer()
+//{
+//	end = std::chrono::high_resolution_clock::now();
+//	duration = end - start;
+//	float s = duration.count() * 1000;
+//
+//#if PEN_DEBUG
+//	LOG.LogError("Timer: " + std::to_string(s) + "ms");
+//#else
+//	std::cout << "Timer: " + std::to_string(s) + "ms\n";
+//#endif
+//}
 
 Instrumentor::Instrumentor()
 	: m_CurrentSession(nullptr), m_ProfileCount(0)
 {
 }
 
-void Instrumentor::BeginSession(const std::string& name, const std::string& filepath = "results.json")
+void Instrumentor::BeginSession(const std::string& name, const std::string& filepath)
 {
 	m_OutputStream.open(filepath);
 	WriteHeader();
@@ -103,7 +103,7 @@ void InstrumentationTimer::Stop()
 	auto endTimepoint = std::chrono::high_resolution_clock::now();
 
 	long long start = std::chrono::time_point_cast<std::chrono::microseconds>(m_StartTimepoint).time_since_epoch().count();
-	long long end = std::chrono::time_point_cast<std::chrono::microseconds>(m_StartTimepoint).time_since_epoch().count();
+	long long end = std::chrono::time_point_cast<std::chrono::microseconds>(endTimepoint).time_since_epoch().count();
 
 	uint32_t threadID = std::hash<std::thread::id>{}(std::this_thread::get_id());
 	Instrumentor::Get().WriteProfile({ m_Name, start, end, threadID });

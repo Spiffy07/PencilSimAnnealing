@@ -1,12 +1,7 @@
 // $(SolutionDir)bin\intermediates\$(Platform)\$(Configuration)
 #include "pch.h"
-//#include <iostream>
-//#include <thread>
-#include "Objects.h"
-#include "LogExtern.h"
 
-#include <future>
-#include <mutex>
+#include "Objects.h"
 
 #if PEN_DEBUG
 const Log::LogLevel LOG_LEVEL = Log::Warning;		// set log level here
@@ -22,7 +17,7 @@ static bool FindGameKnowledge(const Table::Games& gameName, Dealer* dealerPtr);
 static void SimulateAnnealing(std::vector<Table>& tablesIn, std::vector<Dealer>& dealersIn, Push& pushIn);
 static void PrintPush(Push& pushIn);
 
-static const int s_THREAD_COUNT = 1;
+static const int s_THREAD_COUNT = 8;
 static const int s_SUCCESSFUL_CHANGE_LIMIT = 2000;	// limit of successful changes per tempurature iteration
 static const int s_ATTEMPT_LIMIT = 50000;			// limit of attempts per tempurature iteration
 static const double s_STARTING_TEMPURATURE = 5000;	// starting temp, higher increases randomization
@@ -31,9 +26,18 @@ static int s_bestFitness = 0;						// highest found fitness
 static bool s_calcFitnessLock = false;
 static std::mutex s_DealersMutex;
 
+//void* operator new(size_t size)
+//{
+//	std::cout << "------------ Allocating " << size << " bytes -------------\n";
+//
+//	return malloc(size);
+//}
+
 int main()
 {
-	Timer t;
+	Instrumentor::Get().BeginSession("Profile");
+	InstrumentationTimer timer("Main");
+
 #if PEN_DEBUG
 	LOG.SetLogLevel(LOG_LEVEL);
 #endif
@@ -46,6 +50,7 @@ int main()
 
 	Table::GenerateTables(tables);
 	Dealer::GenerateDealers(dealers);
+	//timer.Stop();
 
 	srand(time(0));
 	//results.reserve(s_THREAD_COUNT);					
@@ -81,8 +86,9 @@ int main()
 		std::cout << std::to_string(p.fitness) + "\n";
 	std::cout << "    Best fitness: " << std::to_string(s_bestFitness) + "\n";
 #endif
-
-	t.endTimer();
+	
+	timer.Stop();
+	Instrumentor::Get().EndSession();
 	std::cout << "End of Program\n";
 	std::cin.get();
 	return 0;
@@ -91,6 +97,7 @@ int main()
 
 static Push PopulateTables(std::vector<Table>& tables, std::vector<Dealer>& dealers)
 {
+	PROFILE_FUNCTION();
 	Push p;
 	p.push.reserve(NUMBER_OF_TABLES);
 	for (Table& t : tables)
@@ -103,6 +110,8 @@ static Push PopulateTables(std::vector<Table>& tables, std::vector<Dealer>& deal
 
 static void CalculateFitness(Push& push, std::vector<Dealer>& dealers)
 {
+	//PROFILE_FUNCTION();	// severely slows down due to calling every iteration
+
 			/* due to std::async passing by value,
 				the std::vector<Dealer>& needed for the function call was
 				actually passed by value (copied) 
@@ -175,6 +184,9 @@ static bool FindGameKnowledge(const Table::Games& gameName, Dealer* dealerPtr)
 
 static void SimulateAnnealing(std::vector<Table>& tablesIn, std::vector<Dealer>& dealersIn, Push& pushIn)
 {
+	PROFILE_FUNCTION();
+
+	//InstrumentationTimer timer("SimulateAnnealing");
 	int changeCount;
 	int attemptCount;
 	int attemptNoChange;
@@ -184,7 +196,7 @@ static void SimulateAnnealing(std::vector<Table>& tablesIn, std::vector<Dealer>&
 
 	do
 	{
-		Timer sa;
+		//Timer sa;
 		tempurature = tempurature * .95;
 		changeCount = 0;
 		attemptCount = 0;
@@ -227,6 +239,8 @@ static void SimulateAnnealing(std::vector<Table>& tablesIn, std::vector<Dealer>&
 
 static void PrintPush(Push& p)
 {
+	PROFILE_FUNCTION();
+
 #if PEN_DEBUG
 	LOG.LogError("final Fitness: " + std::to_string(p.fitness));
 	//LOG.LogWarning("Highest Fitness: " + std::to_string(bestFitness));

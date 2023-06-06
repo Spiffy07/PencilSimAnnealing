@@ -8,16 +8,16 @@
 
 #include <thread>
 
-struct Timer
-{
-	std::chrono::time_point<std::chrono::steady_clock> start, end;
-	std::chrono::duration<float> duration;
-
-	Timer();
-	~Timer();
-
-	void endTimer();
-};
+//struct Timer
+//{
+//	std::chrono::time_point<std::chrono::steady_clock> start, end;
+//	std::chrono::duration<float> duration;
+//
+//	Timer();
+//	~Timer();
+//
+//	void endTimer();
+//};
 
 struct ProfileResult
 {
@@ -40,7 +40,7 @@ private:
 
 public:
 	Instrumentor();
-	void BeginSession(const std::string& name, const std::string& filepath);
+	void BeginSession(const std::string& name, const std::string& filepath = "results.json");
 	void EndSession();
 	void WriteProfile(const ProfileResult& result);
 	void WriteHeader();

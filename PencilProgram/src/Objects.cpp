@@ -26,6 +26,7 @@ Table::Table(const Table& table)
 
 void Table::GenerateTables(std::vector<Table>& tablesIn)
 {
+	PROFILE_FUNCTION();
 	tablesIn.reserve(NUMBER_OF_TABLES);
 
 	tablesIn.emplace_back(101, BJ);
@@ -95,6 +96,7 @@ Dealer::Dealer(const Dealer& dealer)
 
 void Dealer::GenerateDealers(std::vector<Dealer>& dealersIn)
 {
+	PROFILE_FUNCTION();
 	dealersIn.reserve(NUMBER_OF_DEALERS);
 
 	dealersIn.emplace_back("Thomas", std::vector<Table::Games>{Table::BJ, Table::Rou, Table::MB, Table::Poker});
@@ -130,26 +132,26 @@ Assignment::Assignment(Table& t, Dealer* dPtr)
 }
 
 
-Timer::Timer()
-{
-	start = std::chrono::high_resolution_clock::now();
-	duration = start - start;
-}
-
-Timer::~Timer()
-{
-
-}
-
-void Timer::endTimer()
-{
-	end = std::chrono::high_resolution_clock::now();
-	duration = end - start;
-	float s = duration.count() * 1000;
-
-#if PEN_DEBUG
-	LOG.LogError("Timer: " + std::to_string(s) + "ms");
-#else
-	std::cout << "Timer: " + std::to_string(s) + "ms\n";
-#endif
-}
+//Timer::Timer()
+//{
+//	start = std::chrono::high_resolution_clock::now();
+//	duration = start - start;
+//}
+//
+//Timer::~Timer()
+//{
+//
+//}
+//
+//void Timer::endTimer()
+//{
+//	end = std::chrono::high_resolution_clock::now();
+//	duration = end - start;
+//	float s = duration.count() * 1000;
+//
+//#if PEN_DEBUG
+//	LOG.LogError("Timer: " + std::to_string(s) + "ms");
+//#else
+//	std::cout << "Timer: " + std::to_string(s) + "ms\n";
+//#endif
+//}
