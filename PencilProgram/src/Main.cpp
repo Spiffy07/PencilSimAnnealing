@@ -4,17 +4,17 @@
 #include "Objects.h"
 
 #if PEN_DEBUG
-const Log::LogLevel LOG_LEVEL = Log::Warning;		// set log level here
+const Log::LogLevel LOG_LEVEL = Log::Error;		// set log level here
 Log LOG;
 #endif
 
 // static member declarations
 unsigned int Dealer::employeeNumberCounter;
 
-static Push PopulateTables(std::array<Table, NUMBER_OF_TABLES>& tables, std::vector<Dealer>& dealers);
-static void CalculateFitness(Push& push, std::vector<Dealer>& dealers);
+static Push PopulateTables(std::array<Table, NUMBER_OF_TABLES>& tables, std::array<Dealer, NUMBER_OF_DEALERS>& dealers);
+static void CalculateFitness(Push& push, std::array<Dealer, NUMBER_OF_DEALERS>& dealers);
 static bool FindGameKnowledge(const Table::Games& gameName, Dealer* dealerPtr);
-static void SimulateAnnealing(std::array<Table, NUMBER_OF_TABLES>& tablesIn, std::vector<Dealer>& dealersIn, Push& pushIn);
+static void SimulateAnnealing(std::array<Table, NUMBER_OF_TABLES>& tablesIn, std::array<Dealer, NUMBER_OF_DEALERS>& dealersIn, Push& pushIn);
 static void PrintPush(Push& pushIn);
 
 static const int s_THREAD_COUNT = 8;
@@ -43,19 +43,19 @@ int main()
 #endif
 
 	std::array<Table, NUMBER_OF_TABLES> tables;
-	std::vector<Dealer> dealers;
+	std::array<Dealer, NUMBER_OF_DEALERS> dealers;
 	std::vector<Push> results;
-	std::vector<std::thread> threads;
-	std::vector<std::future<void>> futures;
+	//std::vector<std::thread> threads;
+	std::array<std::future<void>, s_THREAD_COUNT> futures;
 
 	Table::GenerateTables(tables);
 	Dealer::GenerateDealers(dealers);
 	//timer.Stop();
 
 	srand(time(0));
-	//results.reserve(s_THREAD_COUNT);					
+	results.reserve(s_THREAD_COUNT);					
 	//threads.reserve(s_THREAD_COUNT);
-	futures.reserve(s_THREAD_COUNT);
+	//futures.reserve(s_THREAD_COUNT);
 
 	Push first = PopulateTables(tables, dealers);
 
@@ -64,12 +64,13 @@ int main()
 	{
 		results.push_back(first);					// copy original Push to prevent scoping issue
 	}
-	for (int i = 0; i < s_THREAD_COUNT; i++)
+	for (int i = 0; i < s_THREAD_COUNT - 1; i++)
 	{
 		//threads.emplace_back([&tables, &dealers, &results, i]() {SimulateAnnealing(tables, dealers, results[i]); });
 		std::cout << "\n" << "thread: " << i << "\n";
-		futures.emplace_back(std::async(std::launch::async, SimulateAnnealing, tables, dealers, std::ref(results[i])));
+		futures[i] = std::async(std::launch::async, SimulateAnnealing, tables, dealers, std::ref(results[i]));
 	}
+	futures[s_THREAD_COUNT - 1] = std::async(std::launch::async, SimulateAnnealing, tables, dealers, std::ref(results[s_THREAD_COUNT - 1]));
 
 	//for (auto& t : threads) t.join();
 	for (auto& f : futures)
@@ -95,7 +96,7 @@ int main()
 }
 
 
-static Push PopulateTables(std::array<Table, NUMBER_OF_TABLES>& tables, std::vector<Dealer>& dealers)
+static Push PopulateTables(std::array<Table, NUMBER_OF_TABLES>& tables, std::array<Dealer, NUMBER_OF_DEALERS>& dealers)
 {
 	PROFILE_FUNCTION();
 	Push p;
@@ -108,7 +109,7 @@ static Push PopulateTables(std::array<Table, NUMBER_OF_TABLES>& tables, std::vec
 	return p;
 }
 
-static void CalculateFitness(Push& push, std::vector<Dealer>& dealers)
+static void CalculateFitness(Push& push, std::array<Dealer, NUMBER_OF_DEALERS>& dealers)
 {
 	//PROFILE_FUNCTION();	// severely slows down due to calling every iteration
 
@@ -182,7 +183,8 @@ static bool FindGameKnowledge(const Table::Games& gameName, Dealer* dealerPtr)
 	return false;
 }
 
-static void SimulateAnnealing(std::array<Table, NUMBER_OF_TABLES>& tablesIn, std::vector<Dealer>& dealersIn, Push& pushIn)
+static void SimulateAnnealing(std::array<Table, NUMBER_OF_TABLES>& tablesIn, 
+	std::array<Dealer, NUMBER_OF_DEALERS>& dealersIn, Push& pushIn)
 {
 	PROFILE_FUNCTION();
 

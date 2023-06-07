@@ -45,7 +45,7 @@ public:
 	Dealer(std::string nameIn, std::vector<Table::Games> gameKnowledgeIn);
 	Dealer(const Dealer& dealer);
 
-	static void GenerateDealers(std::vector<Dealer>& dealersIn);
+	static void GenerateDealers(std::array<Dealer, NUMBER_OF_DEALERS>& dealersIn);
 };
 
 

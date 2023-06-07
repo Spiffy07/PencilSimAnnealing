@@ -100,31 +100,31 @@ Dealer::Dealer(const Dealer& dealer)
 #endif
 }
 
-void Dealer::GenerateDealers(std::vector<Dealer>& dealersIn)
+void Dealer::GenerateDealers(std::array<Dealer, NUMBER_OF_DEALERS>& dealersIn)
 {
 	PROFILE_FUNCTION();
-	dealersIn.reserve(NUMBER_OF_DEALERS);
+	//dealersIn.reserve(NUMBER_OF_DEALERS);
 
-	dealersIn.emplace_back("Thomas", std::vector<Table::Games>{Table::BJ, Table::Rou, Table::MB, Table::Poker});
-	dealersIn.emplace_back("Clarissa", std::vector<Table::Games>{Table::BJ, Table::Rou, Table::MB, Table::Poker});
-	dealersIn.emplace_back("Tiffany", std::vector<Table::Games>{Table::BJ, Table::Rou, Table::MB, Table::Poker});
-	dealersIn.emplace_back("Alex", std::vector<Table::Games>{Table::BJ, Table::Rou, Table::MB, Table::Poker});
-	dealersIn.emplace_back("Chris");
-	dealersIn.emplace_back("John", std::vector<Table::Games>{Table::BJ, Table::Rou, Table::MB, Table::Poker});
-	dealersIn.emplace_back("Ryan", std::vector<Table::Games>{Table::BJ, Table::Rou, Table::MB, Table::Poker});
-	dealersIn.emplace_back();
-	dealersIn.emplace_back();
-	dealersIn.emplace_back();
-	dealersIn.emplace_back();
-	dealersIn.emplace_back();
-	dealersIn.emplace_back();
-	dealersIn.emplace_back();
-	dealersIn.emplace_back();
-	dealersIn.emplace_back();
-	dealersIn.emplace_back();
-	dealersIn.emplace_back();
-	dealersIn.emplace_back();
-	dealersIn.emplace_back();
+	dealersIn[0] = Dealer("Thomas", std::vector<Table::Games>{Table::BJ, Table::Rou, Table::MB, Table::Poker});
+	dealersIn[1] = Dealer("Clarissa", std::vector<Table::Games>{Table::BJ, Table::Rou, Table::MB, Table::Poker});
+	dealersIn[2] = Dealer("Tiffany", std::vector<Table::Games>{Table::BJ, Table::Rou, Table::MB, Table::Poker});
+	dealersIn[3] = Dealer("Alex", std::vector<Table::Games>{Table::BJ, Table::Rou, Table::MB, Table::Poker});
+	dealersIn[4] = Dealer("Chris");
+	dealersIn[5] = Dealer("John", std::vector<Table::Games>{Table::BJ, Table::Rou, Table::MB, Table::Poker});
+	dealersIn[6] = Dealer("Ryan", std::vector<Table::Games>{Table::BJ, Table::Rou, Table::MB, Table::Poker});
+	dealersIn[7] = Dealer();
+	dealersIn[8] = Dealer();
+	dealersIn[9] = Dealer();
+	dealersIn[10] = Dealer();
+	dealersIn[11] = Dealer();
+	dealersIn[12] = Dealer();
+	dealersIn[13] = Dealer();
+	dealersIn[14] = Dealer();
+	dealersIn[15] = Dealer();
+	dealersIn[16] = Dealer();
+	dealersIn[17] = Dealer();
+	dealersIn[18] = Dealer();
+	dealersIn[19] = Dealer();
 }
 
 Assignment::Assignment(Table& t, Dealer& d) 
