@@ -17,7 +17,7 @@ static bool FindGameKnowledge(const Table::Games& gameName, Dealer* dealerPtr);
 static void SimulateAnnealing(std::array<Table, NUMBER_OF_TABLES>& tablesIn, std::array<Dealer, NUMBER_OF_DEALERS>& dealersIn, Push& pushIn);
 static void PrintPush(Push& pushIn);
 
-static const int s_THREAD_COUNT = 4;
+static const int s_THREAD_COUNT = 8;
 static const int s_SUCCESSFUL_CHANGE_LIMIT = 2000;	// limit of successful changes per tempurature iteration
 static const int s_ATTEMPT_LIMIT = 50000;			// limit of attempts per tempurature iteration
 static const double s_STARTING_TEMPURATURE = 5000;	// starting temp, higher increases randomization
@@ -26,12 +26,12 @@ static int s_bestFitness = 0;						// highest found fitness
 static bool s_calcFitnessLock = false;
 static std::mutex s_DealersMutex;
 
-void* operator new(size_t size)
-{
-	std::cout << "------------ Allocating " << size << " bytes -------------\n";
-
-	return malloc(size);
-}
+//void* operator new(size_t size)
+//{
+//	std::cout << "------------ Allocating " << size << " bytes -------------\n";
+//
+//	return malloc(size);
+//}
 
 int main()
 {
@@ -95,8 +95,6 @@ static Push PopulateTables(std::array<Table, NUMBER_OF_TABLES>& tables, std::arr
 {
 	PROFILE_FUNCTION();
 	Push p;
-	//for (Table& t : tables)
-		//p.push.emplace_back(t, dealers[rand() % NUMBER_OF_DEALERS]);
 	for (int i = 0; i < NUMBER_OF_TABLES; i++)
 	{
 		p.push[i] = { tables[i], dealers[rand() % NUMBER_OF_DEALERS] };
@@ -184,7 +182,6 @@ static void SimulateAnnealing(std::array<Table, NUMBER_OF_TABLES>& tablesIn,
 {
 	PROFILE_FUNCTION();
 
-	//InstrumentationTimer timer("SimulateAnnealing");
 	int changeCount;
 	int attemptCount;
 	int attemptNoChange;
@@ -194,7 +191,6 @@ static void SimulateAnnealing(std::array<Table, NUMBER_OF_TABLES>& tablesIn,
 
 	do
 	{
-		//Timer sa;
 		tempurature = tempurature * .95;
 		changeCount = 0;
 		attemptCount = 0;
@@ -241,7 +237,6 @@ static void PrintPush(Push& p)
 
 #if PEN_DEBUG
 	LOG.LogError("final Fitness: " + std::to_string(p.fitness));
-	//LOG.LogWarning("Highest Fitness: " + std::to_string(bestFitness));
 
 	for (auto& p : p.push)
 	{
