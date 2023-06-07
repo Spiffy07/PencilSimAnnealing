@@ -125,6 +125,11 @@ void Dealer::GenerateDealers(std::array<Dealer, NUMBER_OF_DEALERS>& dealersIn)
 	dealersIn[19] = Dealer();
 }
 
+Assignment::Assignment()
+	: aTable(Table::Table()), aDealerPtr(nullptr)
+{
+}
+
 Assignment::Assignment(Table& t, Dealer& d) 
 	: aTable(t), aDealerPtr(&d)
 {

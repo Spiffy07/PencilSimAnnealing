@@ -55,7 +55,7 @@ public:
 	Table aTable;
 	Dealer* aDealerPtr;
 
-	Assignment() = delete;
+	Assignment();
 	Assignment(Table& t, Dealer& d);
 	Assignment(Table& t, Dealer* dPtr);
 };
@@ -64,7 +64,7 @@ public:
 class Push
 {
 public:
-	std::vector<Assignment> push;
+	std::array<Assignment, NUMBER_OF_TABLES> push;
 	int fitness = 0;
 
 	//Push() = delete;

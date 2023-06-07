@@ -4,7 +4,7 @@
 #include "Objects.h"
 
 #if PEN_DEBUG
-const Log::LogLevel LOG_LEVEL = Log::Warning;		// set log level here
+const Log::LogLevel LOG_LEVEL = Log::Error;		// set log level here
 Log LOG;
 #endif
 
@@ -17,7 +17,7 @@ static bool FindGameKnowledge(const Table::Games& gameName, Dealer* dealerPtr);
 static void SimulateAnnealing(std::array<Table, NUMBER_OF_TABLES>& tablesIn, std::array<Dealer, NUMBER_OF_DEALERS>& dealersIn, Push& pushIn);
 static void PrintPush(Push& pushIn);
 
-static const int s_THREAD_COUNT = 8;
+static const int s_THREAD_COUNT = 4;
 static const int s_SUCCESSFUL_CHANGE_LIMIT = 2000;	// limit of successful changes per tempurature iteration
 static const int s_ATTEMPT_LIMIT = 50000;			// limit of attempts per tempurature iteration
 static const double s_STARTING_TEMPURATURE = 5000;	// starting temp, higher increases randomization
@@ -95,10 +95,11 @@ static Push PopulateTables(std::array<Table, NUMBER_OF_TABLES>& tables, std::arr
 {
 	PROFILE_FUNCTION();
 	Push p;
-	p.push.reserve(NUMBER_OF_TABLES);
-	for (Table& t : tables)
+	//for (Table& t : tables)
+		//p.push.emplace_back(t, dealers[rand() % NUMBER_OF_DEALERS]);
+	for (int i = 0; i < NUMBER_OF_TABLES; i++)
 	{
-		p.push.emplace_back(t, dealers[rand() % NUMBER_OF_DEALERS]);
+		p.push[i] = { tables[i], dealers[rand() % NUMBER_OF_DEALERS] };
 	}   
 
 	return p;
