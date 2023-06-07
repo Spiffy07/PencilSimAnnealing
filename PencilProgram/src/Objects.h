@@ -20,11 +20,12 @@ public:
 	Games gameName;
 
 	// constructors
-	Table() = delete;			// do not allow blank Table object
+	//Table() = delete;			// do not allow blank Table object
+	Table();
 	Table(int numIn, Games gameName);
 	Table(const Table& table);
 
-	static void GenerateTables(std::vector<Table>& tablesIn);
+	static void GenerateTables(std::array<Table, NUMBER_OF_TABLES>& tablesIn);
 };
 
 

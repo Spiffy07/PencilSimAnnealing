@@ -1,6 +1,6 @@
 #pragma once
 #include <string>
-#include <vector>
+#include <array>
 #include <chrono>
 #include <iostream>
 #include <thread>

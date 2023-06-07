@@ -11,10 +11,10 @@ Log LOG;
 // static member declarations
 unsigned int Dealer::employeeNumberCounter;
 
-static Push PopulateTables(std::vector<Table>& tables, std::vector<Dealer>& dealers);
+static Push PopulateTables(std::array<Table, NUMBER_OF_TABLES>& tables, std::vector<Dealer>& dealers);
 static void CalculateFitness(Push& push, std::vector<Dealer>& dealers);
 static bool FindGameKnowledge(const Table::Games& gameName, Dealer* dealerPtr);
-static void SimulateAnnealing(std::vector<Table>& tablesIn, std::vector<Dealer>& dealersIn, Push& pushIn);
+static void SimulateAnnealing(std::array<Table, NUMBER_OF_TABLES>& tablesIn, std::vector<Dealer>& dealersIn, Push& pushIn);
 static void PrintPush(Push& pushIn);
 
 static const int s_THREAD_COUNT = 8;
@@ -26,12 +26,12 @@ static int s_bestFitness = 0;						// highest found fitness
 static bool s_calcFitnessLock = false;
 static std::mutex s_DealersMutex;
 
-//void* operator new(size_t size)
-//{
-//	std::cout << "------------ Allocating " << size << " bytes -------------\n";
-//
-//	return malloc(size);
-//}
+void* operator new(size_t size)
+{
+	std::cout << "------------ Allocating " << size << " bytes -------------\n";
+
+	return malloc(size);
+}
 
 int main()
 {
@@ -42,7 +42,7 @@ int main()
 	LOG.SetLogLevel(LOG_LEVEL);
 #endif
 
-	std::vector<Table> tables;
+	std::array<Table, NUMBER_OF_TABLES> tables;
 	std::vector<Dealer> dealers;
 	std::vector<Push> results;
 	std::vector<std::thread> threads;
@@ -95,14 +95,14 @@ int main()
 }
 
 
-static Push PopulateTables(std::vector<Table>& tables, std::vector<Dealer>& dealers)
+static Push PopulateTables(std::array<Table, NUMBER_OF_TABLES>& tables, std::vector<Dealer>& dealers)
 {
 	PROFILE_FUNCTION();
 	Push p;
 	p.push.reserve(NUMBER_OF_TABLES);
 	for (Table& t : tables)
 	{
-		p.push.emplace_back(t, dealers[rand() % 10]);
+		p.push.emplace_back(t, dealers[rand() % NUMBER_OF_DEALERS]);
 	}   
 
 	return p;
@@ -182,7 +182,7 @@ static bool FindGameKnowledge(const Table::Games& gameName, Dealer* dealerPtr)
 	return false;
 }
 
-static void SimulateAnnealing(std::vector<Table>& tablesIn, std::vector<Dealer>& dealersIn, Push& pushIn)
+static void SimulateAnnealing(std::array<Table, NUMBER_OF_TABLES>& tablesIn, std::vector<Dealer>& dealersIn, Push& pushIn)
 {
 	PROFILE_FUNCTION();
 

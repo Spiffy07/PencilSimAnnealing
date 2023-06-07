@@ -11,6 +11,12 @@ const unsigned int STARTING_EMPLOYEE_NUMBER = 100000;
 
 
 // constructors
+Table::Table()
+	: number(0), gameName(BJ)
+{
+
+}
+
 Table::Table(int numIn, Table::Games gameName)
 	:number(numIn), gameName(gameName)
 {
@@ -24,31 +30,31 @@ Table::Table(const Table& table)
 #endif
 }
 
-void Table::GenerateTables(std::vector<Table>& tablesIn)
+void Table::GenerateTables(std::array<Table, NUMBER_OF_TABLES>& tablesIn)
 {
 	PROFILE_FUNCTION();
-	tablesIn.reserve(NUMBER_OF_TABLES);
+	//tablesIn.reserve(NUMBER_OF_TABLES);
 
-	tablesIn.emplace_back(101, BJ);
-	tablesIn.emplace_back(102, BJ);
-	tablesIn.emplace_back(103, BJ);
-	tablesIn.emplace_back(104, BJ);
-	tablesIn.emplace_back(105, BJ);
-	tablesIn.emplace_back(106, Poker);
-	tablesIn.emplace_back(107, Poker);
-	tablesIn.emplace_back(108, Poker);
-	tablesIn.emplace_back(109, MB);
-	tablesIn.emplace_back(110, MB);
-	tablesIn.emplace_back(111, MB);
-	tablesIn.emplace_back(112, MB);
-	tablesIn.emplace_back(113, Rou);
-	tablesIn.emplace_back(114, Rou);
-	tablesIn.emplace_back(115, BJ);
-	tablesIn.emplace_back(116, BJ);
-	tablesIn.emplace_back(117, BJ);
-	tablesIn.emplace_back(118, BJ);
-	tablesIn.emplace_back(119, Poker);
-	tablesIn.emplace_back(120, Poker);
+	tablesIn[0] = Table(101, BJ);
+	tablesIn[1] = Table(102, BJ);
+	tablesIn[2] = Table(103, BJ);
+	tablesIn[3] = Table(104, BJ);
+	tablesIn[4] = Table(105, BJ);
+	tablesIn[5] = Table(106, Poker);
+	tablesIn[6] = Table(107, Poker);
+	tablesIn[7] = Table(108, Poker);
+	tablesIn[8] = Table(109, MB);
+	tablesIn[9] = Table(110, MB);
+	tablesIn[10] = Table(111, MB);
+	tablesIn[11] = Table(112, MB);
+	tablesIn[12] = Table(113, Rou);
+	tablesIn[13] = Table(114, Rou);
+	tablesIn[14] = Table(115, BJ);
+	tablesIn[15] = Table(116, BJ);
+	tablesIn[16] = Table(117, BJ);
+	tablesIn[17] = Table(118, BJ);
+	tablesIn[18] = Table(119, Poker);
+	tablesIn[19] = Table(120, Poker);
 }
 
 
