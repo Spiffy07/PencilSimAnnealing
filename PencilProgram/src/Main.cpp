@@ -4,7 +4,7 @@
 #include "Objects.h"
 
 #if PEN_DEBUG
-const Log::LogLevel LOG_LEVEL = Log::Error;		// set log level here
+const Log::LogLevel LOG_LEVEL = Log::Warning;		// set log level here
 Log LOG;
 #endif
 
@@ -26,12 +26,12 @@ static int s_bestFitness = 0;						// highest found fitness
 static bool s_calcFitnessLock = false;
 static std::mutex s_DealersMutex;
 
-void* operator new(size_t size)
-{
-	std::cout << "------------ Allocating " << size << " bytes -------------\n";
-
-	return malloc(size);
-}
+//void* operator new(size_t size)
+//{
+//	std::cout << "------------ Allocating " << size << " bytes -------------\n";
+//
+//	return malloc(size);
+//}
 
 int main()
 {
@@ -44,7 +44,7 @@ int main()
 
 	std::array<Table, NUMBER_OF_TABLES> tables;
 	std::array<Dealer, NUMBER_OF_DEALERS> dealers;
-	std::vector<Push> results;
+	std::array<Push, s_THREAD_COUNT> results;
 	//std::vector<std::thread> threads;
 	std::array<std::future<void>, s_THREAD_COUNT> futures;
 
@@ -53,7 +53,7 @@ int main()
 	//timer.Stop();
 
 	srand(time(0));
-	results.reserve(s_THREAD_COUNT);					
+	//results.reserve(s_THREAD_COUNT);					
 	//threads.reserve(s_THREAD_COUNT);
 	//futures.reserve(s_THREAD_COUNT);
 
@@ -62,15 +62,17 @@ int main()
 	CalculateFitness(first, dealers);
 	for (int i = 0; i < s_THREAD_COUNT; i++)
 	{
-		results.push_back(first);					// copy original Push to prevent scoping issue
+		results[i] =first;					// copy original Push to prevent scoping issue
 	}
 	for (int i = 0; i < s_THREAD_COUNT - 1; i++)
 	{
 		//threads.emplace_back([&tables, &dealers, &results, i]() {SimulateAnnealing(tables, dealers, results[i]); });
 		std::cout << "\n" << "thread: " << i << "\n";
-		futures[i] = std::async(std::launch::async, SimulateAnnealing, tables, dealers, std::ref(results[i]));
+		futures[i] = std::async(std::launch::async, 
+			SimulateAnnealing, tables, dealers, std::ref(results[i]));
 	}
-	futures[s_THREAD_COUNT - 1] = std::async(std::launch::async, SimulateAnnealing, tables, dealers, std::ref(results[s_THREAD_COUNT - 1]));
+	futures[s_THREAD_COUNT - 1] = std::async(std::launch::async, 
+		SimulateAnnealing, tables, dealers, std::ref(results[s_THREAD_COUNT - 1]));
 
 	//for (auto& t : threads) t.join();
 	for (auto& f : futures)
