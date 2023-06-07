@@ -26,12 +26,12 @@ static int s_bestFitness = 0;						// highest found fitness
 static bool s_calcFitnessLock = false;
 static std::mutex s_DealersMutex;
 
-//void* operator new(size_t size)
-//{
-//	std::cout << "------------ Allocating " << size << " bytes -------------\n";
-//
-//	return malloc(size);
-//}
+void* operator new(size_t size)
+{
+	std::cout << "------------ Allocating " << size << " bytes -------------\n";
+
+	return malloc(size);
+}
 
 int main()
 {
@@ -45,17 +45,12 @@ int main()
 	std::array<Table, NUMBER_OF_TABLES> tables;
 	std::array<Dealer, NUMBER_OF_DEALERS> dealers;
 	std::array<Push, s_THREAD_COUNT> results;
-	//std::vector<std::thread> threads;
 	std::array<std::future<void>, s_THREAD_COUNT> futures;
 
 	Table::GenerateTables(tables);
 	Dealer::GenerateDealers(dealers);
-	//timer.Stop();
 
 	srand(time(0));
-	//results.reserve(s_THREAD_COUNT);					
-	//threads.reserve(s_THREAD_COUNT);
-	//futures.reserve(s_THREAD_COUNT);
 
 	Push first = PopulateTables(tables, dealers);
 
@@ -66,7 +61,6 @@ int main()
 	}
 	for (int i = 0; i < s_THREAD_COUNT - 1; i++)
 	{
-		//threads.emplace_back([&tables, &dealers, &results, i]() {SimulateAnnealing(tables, dealers, results[i]); });
 		std::cout << "\n" << "thread: " << i << "\n";
 		futures[i] = std::async(std::launch::async, 
 			SimulateAnnealing, tables, dealers, std::ref(results[i]));
@@ -74,7 +68,6 @@ int main()
 	futures[s_THREAD_COUNT - 1] = std::async(std::launch::async, 
 		SimulateAnnealing, tables, dealers, std::ref(results[s_THREAD_COUNT - 1]));
 
-	//for (auto& t : threads) t.join();
 	for (auto& f : futures)
 		f.wait();
 

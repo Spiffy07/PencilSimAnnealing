@@ -66,9 +66,8 @@ Dealer::Dealer()
 	employeeNumber = STARTING_EMPLOYEE_NUMBER + employeeNumberCounter;
 	name = std::to_string(employeeNumber);
 
-	gameKnowledge.reserve(NUMBER_OF_GAMES);
-	gameKnowledge.emplace_back(Table::BJ);
-	gameKnowledge.emplace_back(Table::Poker);
+	gameKnowledge[0] = Table::BJ;
+	gameKnowledge[1] = Table::Poker;
 }
 
 Dealer::Dealer(std::string nameIn)
@@ -77,12 +76,11 @@ Dealer::Dealer(std::string nameIn)
 	employeeNumberCounter++;
 	employeeNumber = STARTING_EMPLOYEE_NUMBER + employeeNumberCounter;
 
-	gameKnowledge.reserve(NUMBER_OF_GAMES);
-	gameKnowledge.emplace_back(Table::BJ);
-	gameKnowledge.emplace_back(Table::Poker);
+	gameKnowledge[0] = Table::BJ;
+	gameKnowledge[1] = Table::Poker;
 }
 
-Dealer::Dealer(std::string nameIn, std::vector<Table::Games> gameKnowledgeIn)
+Dealer::Dealer(std::string nameIn, std::array<Table::Games, NUMBER_OF_GAMES> gameKnowledgeIn)
 	: name(nameIn), gameKnowledge(gameKnowledgeIn), pushMinutes(0), tablesAssigned(0)
 {
 	employeeNumberCounter++;
@@ -105,13 +103,13 @@ void Dealer::GenerateDealers(std::array<Dealer, NUMBER_OF_DEALERS>& dealersIn)
 	PROFILE_FUNCTION();
 	//dealersIn.reserve(NUMBER_OF_DEALERS);
 
-	dealersIn[0] = Dealer("Thomas", std::vector<Table::Games>{Table::BJ, Table::Rou, Table::MB, Table::Poker});
-	dealersIn[1] = Dealer("Clarissa", std::vector<Table::Games>{Table::BJ, Table::Rou, Table::MB, Table::Poker});
-	dealersIn[2] = Dealer("Tiffany", std::vector<Table::Games>{Table::BJ, Table::Rou, Table::MB, Table::Poker});
-	dealersIn[3] = Dealer("Alex", std::vector<Table::Games>{Table::BJ, Table::Rou, Table::MB, Table::Poker});
+	dealersIn[0] = Dealer("Thomas", std::array<Table::Games, NUMBER_OF_GAMES>{Table::BJ, Table::Rou, Table::MB, Table::Poker});
+	dealersIn[1] = Dealer("Clarissa", std::array<Table::Games, NUMBER_OF_GAMES>{Table::BJ, Table::Rou, Table::MB, Table::Poker});
+	dealersIn[2] = Dealer("Tiffany", std::array<Table::Games, NUMBER_OF_GAMES>{Table::BJ, Table::Rou, Table::MB, Table::Poker});
+	dealersIn[3] = Dealer("Alex", std::array<Table::Games, NUMBER_OF_GAMES>{Table::BJ, Table::Rou, Table::MB, Table::Poker});
 	dealersIn[4] = Dealer("Chris");
-	dealersIn[5] = Dealer("John", std::vector<Table::Games>{Table::BJ, Table::Rou, Table::MB, Table::Poker});
-	dealersIn[6] = Dealer("Ryan", std::vector<Table::Games>{Table::BJ, Table::Rou, Table::MB, Table::Poker});
+	dealersIn[5] = Dealer("John", std::array<Table::Games, NUMBER_OF_GAMES>{Table::BJ, Table::Rou, Table::MB, Table::Poker});
+	dealersIn[6] = Dealer("Ryan", std::array<Table::Games, NUMBER_OF_GAMES>{Table::BJ, Table::Rou, Table::MB, Table::Poker});
 	dealersIn[7] = Dealer();
 	dealersIn[8] = Dealer();
 	dealersIn[9] = Dealer();

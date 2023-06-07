@@ -35,14 +35,14 @@ public:
 	static unsigned int employeeNumberCounter;
 	std::string name;
 	int employeeNumber;
-	std::vector<Table::Games> gameKnowledge;				// Determine list of games and set vector.resize
+	std::array<Table::Games, NUMBER_OF_GAMES> gameKnowledge;				// Determine list of games and set vector.resize
 	int pushMinutes;
 	int tablesAssigned;
 
 		// constructors
 	Dealer();
 	Dealer(std::string nameIn);
-	Dealer(std::string nameIn, std::vector<Table::Games> gameKnowledgeIn);
+	Dealer(std::string nameIn, std::array<Table::Games, NUMBER_OF_GAMES> gameKnowledgeIn);
 	Dealer(const Dealer& dealer);
 
 	static void GenerateDealers(std::array<Dealer, NUMBER_OF_DEALERS>& dealersIn);

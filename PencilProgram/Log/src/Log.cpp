@@ -11,7 +11,7 @@ void Log::LogError(std::string message)
 		std::cout << message + "\n";
 }
 
-void Log::LogWarning(std::string message)
+void Log::LogWarning(std::string message) // create temps &&
 {
 	if (m_LogLevel >= Warning)
 		std::cout << "  " + message + "\n";
