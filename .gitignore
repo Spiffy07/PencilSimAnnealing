@@ -28,3 +28,7 @@ PencilProgram/.vs/
 /PencilProgram/bin/x64/Debug/PencilSimAnnealing.pdb
 /PencilProgram/bin/intermediates/x64/Debug/PencilSi.65F6D3C4.tlog/CL.command.1.tlog
 /.vs
+/PencilProgram/bin/intermediates/x64/Debug/PencilSimAnnealing.exe.recipe
+/PencilProgram/bin/intermediates/x64/Debug/PencilSi.65F6D3C4.tlog/PencilSimAnnealing.lastbuildstate
+/PencilProgram/bin/intermediates/x64/Debug/PencilSi.65F6D3C4.tlog/link.command.1.tlog
+/PencilProgram/results.json
