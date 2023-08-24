@@ -40,7 +40,7 @@ private:
 
 public:
 	Instrumentor();
-	void BeginSession(const std::string& name, const std::string& filepath = "results.json");
+	void BeginSession(const std::string& name, const std::string& filepath = "ProfileResults.json");
 	void EndSession();
 	void WriteProfile(const ProfileResult& result);
 	void WriteHeader();

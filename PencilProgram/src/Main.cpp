@@ -4,7 +4,7 @@
 #include "Objects.h"
 
 #if PEN_DEBUG
-const Log::LogLevel LOG_LEVEL = Log::Error;		// set log level here
+const Log::LogLevel LOG_LEVEL = Log::Warning;		// set log level here
 Log LOG;
 #endif
 
@@ -35,8 +35,10 @@ static std::mutex s_DealersMutex;
 
 int main()
 {
+#if PROFILING	// turn on/off profiling in pch.h
 	Instrumentor::Get().BeginSession("Profile");
 	InstrumentationTimer timer("Main");
+#endif
 
 #if PEN_DEBUG
 	LOG.SetLogLevel(LOG_LEVEL);
@@ -71,19 +73,20 @@ int main()
 	for (auto& f : futures)
 		f.wait();
 
-#if PEN_DEBUG
 	for (auto& p : results)
 	{
 		PrintPush(p);
 	}
+
+#if PEN_DEBUG
 	LOG.LogWarning("Highest Fitness: " + std::to_string(s_bestFitness));
 #else
-	for (auto& p : results)
-		std::cout << std::to_string(p.fitness) + "\n";
 	std::cout << "    Best fitness: " << std::to_string(s_bestFitness) + "\n";
 #endif
 	
+#if PROFILING
 	timer.Stop();
+#endif
 	Instrumentor::Get().EndSession();
 	std::cout << "End of Program\n";
 	std::cin.get();
@@ -234,8 +237,12 @@ static void SimulateAnnealing(std::array<Table, NUMBER_OF_TABLES>& tablesIn,
 static void PrintPush(Push& p)
 {
 	PROFILE_FUNCTION();
-
 #if PEN_DEBUG
+#else
+	const Log::LogLevel LOG_LEVEL = Log::Error;		// create log system here to output in release mode
+	Log LOG;
+#endif
+
 	LOG.LogError("final Fitness: " + std::to_string(p.fitness));
 
 	for (auto& p : p.push)
@@ -243,20 +250,20 @@ static void PrintPush(Push& p)
 		switch (p.aTable.gameName)
 		{
 		case Table::BJ:
-			LOG.LogWarning(std::to_string(p.aTable.number) + "     BJ     " + p.aDealerPtr->name);
+			LOG.LogError(std::to_string(p.aTable.number) + "     BJ     " + p.aDealerPtr->name);
 			break;
 		case Table::Rou:
-			LOG.LogWarning(std::to_string(p.aTable.number) + "     Rou    " + p.aDealerPtr->name);
+			LOG.LogError(std::to_string(p.aTable.number) + "     Rou    " + p.aDealerPtr->name);
 			break;
 		case Table::MB:
-			LOG.LogWarning(std::to_string(p.aTable.number) + "     MB     " + p.aDealerPtr->name);
+			LOG.LogError(std::to_string(p.aTable.number) + "     MB     " + p.aDealerPtr->name);
 			break;
 		case Table::Poker:
-			LOG.LogWarning(std::to_string(p.aTable.number) + "     Poker  " + p.aDealerPtr->name);
+			LOG.LogError(std::to_string(p.aTable.number) + "     Poker  " + p.aDealerPtr->name);
 			break;
 		default:
 			LOG.LogError("Error: Invalid message in final Log");
 		}
 	}
-#endif
+
 }
