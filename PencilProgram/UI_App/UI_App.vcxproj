@@ -126,7 +126,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)DearImGui;$(SolutionDir)DearImGui\Backends\;$(SolutionDir)DearImGui\glfw\include\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)DearImGui;$(SolutionDir)DearImGui\Backends\;$(SolutionDir)DearImGui\glfw\include\;$(SolutionDir)src\;$(SolutionDir)Log\src\;$(SolutionDir)InstrumentorTimer\src\</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
