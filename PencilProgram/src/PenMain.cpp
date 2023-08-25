@@ -35,7 +35,7 @@ static std::mutex s_DealersMutex;
 //	return malloc(size);
 //}
 
-int main()
+int PenMain()
 {
 #if PROFILING	// turn on/off profiling in pch.h
 	Instrumentor::Get().BeginSession("Profile");

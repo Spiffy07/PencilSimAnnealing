@@ -132,8 +132,8 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)DearImGui\glfw\lib-vc2010-64</AdditionalLibraryDirectories>
-      <AdditionalDependencies>opengl32.lib;glfw3.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)bin\$(Platform)\$(Configuration)\Log\;$(SolutionDir)bin\$(Platform)\$(Configuration)\InstrumentorTimer\;$(SolutionDir)bin\$(Platform)\$(Configuration)\PencilSimAnnealing\;$(SolutionDir)DearImGui\glfw\lib-vc2010-64</AdditionalLibraryDirectories>
+      <AdditionalDependencies>InstrumentorTimer.lib;Log.lib;PencilSimAnnealing.lib;opengl32.lib;glfw3.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -156,12 +156,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\src\Objects.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\UI_App.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\src\Objects.h" />
     <ClInclude Include="src\UI_App.h" />
   </ItemGroup>
   <ItemGroup>

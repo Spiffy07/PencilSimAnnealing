@@ -150,7 +150,7 @@
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
       </PrecompiledHeaderFile>
     </ClCompile>
-    <ClCompile Include="src\Main.cpp" />
+    <ClCompile Include="src\PenMain.cpp" />
     <ClCompile Include="src\Objects.cpp" />
   </ItemGroup>
   <ItemGroup>
