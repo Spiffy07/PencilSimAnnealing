@@ -3,13 +3,15 @@
 
 #include "Objects.h"
 
+#define SINGLE_THREAD
+
 #if PEN_DEBUG
-const Log::LogLevel LOG_LEVEL = Log::Warning;		// set log level here
+const Log::LogLevel LOG_LEVEL = Log::Error;		// set log level here
 Log LOG;
 #endif
 
-// static member declarations
-unsigned int Dealer::employeeNumberCounter;
+//// static member declarations
+//unsigned int Dealer::employeeNumberCounter;
 
 static Push PopulateTables(std::array<Table, NUMBER_OF_TABLES>& tables, std::array<Dealer, NUMBER_OF_DEALERS>& dealers);
 static void CalculateFitness(Push& push, std::array<Dealer, NUMBER_OF_DEALERS>& dealers);
@@ -57,6 +59,12 @@ int main()
 	Push first = PopulateTables(tables, dealers);
 
 	CalculateFitness(first, dealers);
+
+#ifdef SINGLE_THREAD
+	SimulateAnnealing(tables, dealers, first);
+
+	PrintPush(first);
+#else
 	for (int i = 0; i < s_THREAD_COUNT; i++)
 	{
 		results[i] =first;					// copy original Push to prevent scoping issue
@@ -77,6 +85,7 @@ int main()
 	{
 		PrintPush(p);
 	}
+#endif
 
 #if PEN_DEBUG
 	LOG.LogWarning("Highest Fitness: " + std::to_string(s_bestFitness));

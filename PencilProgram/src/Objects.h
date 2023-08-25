@@ -1,3 +1,5 @@
+#pragma once 
+
 #include "pch.h"
 //#include <string>
 //#include <vector>
@@ -47,6 +49,7 @@ public:
 
 	static void GenerateDealers(std::array<Dealer, NUMBER_OF_DEALERS>& dealersIn);
 };
+
 
 
 class Assignment

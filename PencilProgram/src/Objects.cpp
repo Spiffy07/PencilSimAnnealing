@@ -9,6 +9,8 @@
 
 const unsigned int STARTING_EMPLOYEE_NUMBER = 100000;
 
+// static member declarations
+unsigned int Dealer::employeeNumberCounter;
 
 // constructors
 Table::Table()

@@ -9,6 +9,10 @@ namespace MyApp {
 	bool show_demo_window = true;
 	static ImGuiTableFlags flags = ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg;
 
+	static void MovePush()
+	{
+
+	}
 
 	static void HelpMarker(const char* desc)
 	{
@@ -45,6 +49,8 @@ namespace MyApp {
 		ImGui::TableSetupColumn("Dealer");
 		ImGui::TableHeadersRow();
 
+		Push simPush; 
+
 		for (int row = 0; row < NUMBER_OF_TABLES; row++)
 		{
 			ImGui::TableNextRow();
@@ -54,7 +60,7 @@ namespace MyApp {
 				switch (column) 
 				{
 				case (0):
-					ImGui::Text("%d", row + 200);
+					ImGui::Text("%d", row + 100);
 					break;
 				case (1):
 					ImGui::Text("Game Name here!");
