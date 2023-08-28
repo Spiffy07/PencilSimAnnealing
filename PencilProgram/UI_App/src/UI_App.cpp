@@ -3,16 +3,13 @@
 #include <imgui.h>
 
 #include "objects.h"
+#include "PenMain.h"
 
 namespace MyApp {
 
 	bool show_demo_window = true;
 	static ImGuiTableFlags flags = ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg;
-
-	static void MovePush()
-	{
-
-	}
+	static Push p;		// stretch: this skews the starting value of employee number
 
 	static void HelpMarker(const char* desc)
 	{
@@ -42,6 +39,11 @@ namespace MyApp {
 		ImGui::SameLine();
 		HelpMarker("Use this to show/hide the demo window for a throrough reference.");
 
+		if (ImGui::Button("Create Push"))
+		{
+			p = std::move(PencilSim::PenMain());
+			//PencilSim::PenMain(p);
+		}
 
 		ImGui::BeginTable("Push", 3, flags);
 		ImGui::TableSetupColumn("Table Number");
@@ -49,24 +51,28 @@ namespace MyApp {
 		ImGui::TableSetupColumn("Dealer");
 		ImGui::TableHeadersRow();
 
-		Push simPush; 
-
+		// stretch: create default push values for initial display or dont show table
 		for (int row = 0; row < NUMBER_OF_TABLES; row++)
 		{
+			std::string name = p.push[row].GetDealerName();
+
 			ImGui::TableNextRow();
 			for (int column = 0; column < 3; column++)
 			{
-				ImGui::TableSetColumnIndex(column);
+				ImGui::TableSetColumnIndex(column);		
 				switch (column) 
 				{
 				case (0):
-					ImGui::Text("%d", row + 100);
+					ImGui::Text("%d", p.push[row].GetTableNumber());
 					break;
 				case (1):
-					ImGui::Text("Game Name here!");
+					ImGui::Text(p.push[row].GetTableGameName());
 					break;
 				case (2):
-					ImGui::Text("Dealer Name here!");
+					if (!(name.empty()))
+						ImGui::Text(p.push[row].GetDealerName().c_str());
+					else
+						ImGui::Text("Invalid Dealer name");
 					break;
 				default:
 					printf("Problem with the switch in table creation!\n");

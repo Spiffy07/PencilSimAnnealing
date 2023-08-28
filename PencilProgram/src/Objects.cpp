@@ -12,7 +12,7 @@ const unsigned int STARTING_EMPLOYEE_NUMBER = 100000;
 // static member declarations
 unsigned int Dealer::employeeNumberCounter;
 
-// constructors
+	// Table
 Table::Table()
 	: number(0), gameName(BJ)
 {
@@ -60,7 +60,7 @@ void Table::GenerateTables(std::array<Table, NUMBER_OF_TABLES>& tablesIn)
 }
 
 
-	// constructors
+	// Dealer
 Dealer::Dealer()
 	: pushMinutes(0), tablesAssigned(0)
 {
@@ -127,6 +127,7 @@ void Dealer::GenerateDealers(std::array<Dealer, NUMBER_OF_DEALERS>& dealersIn)
 	dealersIn[19] = Dealer();
 }
 
+	// Assignment
 Assignment::Assignment()
 	: aTable(Table::Table()), aDealerPtr(nullptr)
 {
@@ -137,11 +138,44 @@ Assignment::Assignment(Table& t, Dealer& d)
 {
 }
 
-Assignment::Assignment(Table& t, Dealer* dPtr) 
-	: aTable(t), aDealerPtr(dPtr)
+int Assignment::GetTableNumber()
 {
+	return this->aTable.number;
 }
 
+char* Assignment::GetTableGameName()
+{
+
+	switch (this->aTable.gameName)
+	{
+	case Table::BJ:
+		return "BJ";
+	case Table::Rou:
+		return "Rou";
+	case Table::MB:
+		return "MB";
+	case Table::Poker:
+		return "Poker";
+	default:
+		LOG.LogError("Error: Invalid message in final Log");
+		return "Error!";
+	}
+}
+
+std::string Assignment::GetDealerName()
+{
+	if (this->aDealer.name == "")
+		return "Invalid Dealer name";
+	else
+		return this->aDealer.name;
+}
+
+
+//	// Push
+//Push::Push(Push&& other)
+//{
+//
+//}
 
 //Timer::Timer()
 //{

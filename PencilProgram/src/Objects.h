@@ -56,11 +56,14 @@ class Assignment
 {
 public:
 	Table aTable;
-	Dealer* aDealerPtr;
+	Dealer aDealer;
 
 	Assignment();
 	Assignment(Table& t, Dealer& d);
-	Assignment(Table& t, Dealer* dPtr);
+
+	int GetTableNumber();
+	char* GetTableGameName();
+	std::string GetDealerName();
 };
 
 
@@ -70,7 +73,10 @@ public:
 	std::array<Assignment, NUMBER_OF_TABLES> push;
 	int fitness = 0;
 
-	//Push() = delete;
+	Push() = default;
+	Push(Push&&) = default;				// move constructor
+	Push& operator=(Push&&) = default;	// move assignment operator
+
 };
 
 
