@@ -9,7 +9,7 @@ namespace PencilSim
 	static Push PopulateTables(std::array<Table, NUMBER_OF_TABLES>& tables, std::array<Dealer, NUMBER_OF_DEALERS>& dealers);
 	//static void PopulateTables(std::array<Table, NUMBER_OF_TABLES>& tables, std::array<Dealer, NUMBER_OF_DEALERS>& dealers, Push& pIn);
 	static void CalculateFitness(Push& push, std::array<Dealer, NUMBER_OF_DEALERS>& dealers);
-	static bool FindGameKnowledge(const Table::Games& gameName, Dealer dealer);
+	static bool FindGameKnowledge(const Table::Games& gameName, Dealer* dealer);
 	static void SimulateAnnealing(std::array<Table, NUMBER_OF_TABLES>& tablesIn, std::array<Dealer, NUMBER_OF_DEALERS>& dealersIn, Push& pushIn);
 	static void PrintPush(Push& pushIn);
 

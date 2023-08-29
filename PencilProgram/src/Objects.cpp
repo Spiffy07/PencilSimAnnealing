@@ -164,10 +164,10 @@ char* Assignment::GetTableGameName()
 
 std::string Assignment::GetDealerName()
 {
-	if (this->aDealer.name == "")
+	if (this->aDealerPtr->name.empty())
 		return "Invalid Dealer name";
 	else
-		return this->aDealer.name;
+		return this->aDealerPtr->name;
 }
 
 

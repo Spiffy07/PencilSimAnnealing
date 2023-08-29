@@ -126,25 +126,25 @@ namespace PencilSim
 		for (Assignment& a : push.push)
 		{
 			// count number of assigned tables MAX = 1
-			a.aDealer.tablesAssigned += 1;	
+			a.aDealerPtr->tablesAssigned += 1;	
 			//LOG.LogInfo(a.aDealerPtr->name + ": " + std::to_string(a.aDealerPtr->tablesAssigned));
 		
 			// Game Knowledge check
 			switch (a.aTable.gameName){
 			case Table::BJ:
-				if (FindGameKnowledge(Table::BJ, a.aDealer) 
+				if (FindGameKnowledge(Table::BJ, a.aDealerPtr)
 					? push.fitness += 3 : push.fitness -= 25);
 				break;
 			case Table::Rou:
-				if (FindGameKnowledge(Table::Rou, a.aDealer)
+				if (FindGameKnowledge(Table::Rou, a.aDealerPtr)
 					? push.fitness += 5 : push.fitness -= 25);
 				break;
 			case Table::MB:
-				if (FindGameKnowledge(Table::MB, a.aDealer)
+				if (FindGameKnowledge(Table::MB, a.aDealerPtr)
 					? push.fitness += 5 : push.fitness -= 25);
 				break;
 			case Table::Poker:
-				if (FindGameKnowledge(Table::Poker, a.aDealer)
+				if (FindGameKnowledge(Table::Poker, a.aDealerPtr)
 					? push.fitness += 3 : push.fitness -= 25);
 				break;
 			default:
@@ -167,9 +167,9 @@ namespace PencilSim
 #endif
 	}
 
-	static bool FindGameKnowledge(const Table::Games& gameName, Dealer dealer)
+	static bool FindGameKnowledge(const Table::Games& gameName, Dealer* dealer)
 	{
-		for (Table::Games g : dealer.gameKnowledge)
+		for (Table::Games g : dealer->gameKnowledge)
 		{
 			if (gameName == g) return true;
 		}
@@ -201,11 +201,11 @@ namespace PencilSim
 				int randTable = rand() % tablesIn.size();			// select which table to change
 				int newDealer = rand() % dealersIn.size();			// select a random dealer
 				int oldFitness = pushIn.fitness;					// fitness before change
-				Dealer oldDealer = pushIn.push[randTable].aDealer;
+				Dealer* oldDealer = pushIn.push[randTable].aDealerPtr;
 
 				if (pushIn.fitness > s_bestFitness) 
 					s_bestFitness = pushIn.fitness;
-				pushIn.push[randTable].aDealer = dealersIn[newDealer];		// the change to be appraised
+				pushIn.push[randTable].aDealerPtr = &dealersIn[newDealer];		// the change to be appraised
 
 				CalculateFitness(pushIn, dealersIn);		// 'pushIn' object has post-change fitness
 
@@ -217,7 +217,7 @@ namespace PencilSim
 				else
 				{
 					pushIn.fitness = oldFitness;						// reset fitness
-					pushIn.push[randTable].aDealer = oldDealer;		// reset dealer
+					pushIn.push[randTable].aDealerPtr = oldDealer;		// reset dealer
 					attemptNoChange++;
 				}
 				attemptCount++;
@@ -246,16 +246,16 @@ namespace PencilSim
 			switch (p.aTable.gameName)
 			{
 			case Table::BJ:
-				LOG.LogError(std::to_string(p.aTable.number) + "     BJ     " + p.aDealer.name);
+				LOG.LogError(std::to_string(p.aTable.number) + "     BJ     " + p.aDealerPtr->name);
 				break;																	 
 			case Table::Rou:															 
-				LOG.LogError(std::to_string(p.aTable.number) + "     Rou    " + p.aDealer.name);
+				LOG.LogError(std::to_string(p.aTable.number) + "     Rou    " + p.aDealerPtr->name);
 				break;																	 
 			case Table::MB:																 
-				LOG.LogError(std::to_string(p.aTable.number) + "     MB     " + p.aDealer.name);
+				LOG.LogError(std::to_string(p.aTable.number) + "     MB     " + p.aDealerPtr->name);
 				break;																	 
 			case Table::Poker:															 
-				LOG.LogError(std::to_string(p.aTable.number) + "     Poker  " + p.aDealer.name);
+				LOG.LogError(std::to_string(p.aTable.number) + "     Poker  " + p.aDealerPtr->name);
 				break;
 			default:
 				LOG.LogError("Error: Invalid message in final Log");

@@ -56,7 +56,7 @@ class Assignment
 {
 public:
 	Table aTable;
-	Dealer aDealer;
+	Dealer* aDealerPtr;
 
 	Assignment();
 	Assignment(Table& t, Dealer& d);

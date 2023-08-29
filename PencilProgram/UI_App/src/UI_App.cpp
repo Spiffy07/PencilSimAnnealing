@@ -54,7 +54,9 @@ namespace MyApp {
 		// stretch: create default push values for initial display or dont show table
 		for (int row = 0; row < NUMBER_OF_TABLES; row++)
 		{
-			std::string name = p.push[row].GetDealerName();
+			std::string name;
+			if (p.push[row].aDealerPtr != nullptr)
+				name = p.push[row].GetDealerName();
 
 			ImGui::TableNextRow();
 			for (int column = 0; column < 3; column++)
@@ -69,7 +71,7 @@ namespace MyApp {
 					ImGui::Text(p.push[row].GetTableGameName());
 					break;
 				case (2):
-					if (!(name.empty()))
+					if (!name.empty())
 						ImGui::Text(p.push[row].GetDealerName().c_str());
 					else
 						ImGui::Text("Invalid Dealer name");
