@@ -16,7 +16,7 @@ class Table
 public:
 	enum Games
 	{
-		BJ, Rou, MB, Poker
+		BJ, Poker, Rou, MB
 	};
 	int number;
 	Games gameName;
@@ -37,14 +37,14 @@ public:
 	static unsigned int employeeNumberCounter;
 	std::string name;
 	int employeeNumber;
-	std::array<Table::Games, NUMBER_OF_GAMES> gameKnowledge;				// Determine list of games and set vector.resize
+	std::array<bool, NUMBER_OF_GAMES> gameKnowledge;				// Determine list of games and set vector.resize
 	int pushMinutes;
 	int tablesAssigned;
 
 		// constructors
 	Dealer();
 	Dealer(std::string nameIn);
-	Dealer(std::string nameIn, std::array<Table::Games, NUMBER_OF_GAMES> gameKnowledgeIn);
+	Dealer(std::string nameIn, std::array<bool, NUMBER_OF_GAMES> gameKnowledgeIn);
 	Dealer(const Dealer& dealer);
 	Dealer(Dealer&&) = default;			// move constructor
 	Dealer& operator=(Dealer&&) = default;

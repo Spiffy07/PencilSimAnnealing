@@ -68,8 +68,10 @@ Dealer::Dealer()
 	employeeNumber = STARTING_EMPLOYEE_NUMBER + employeeNumberCounter;
 	name = std::to_string(employeeNumber);
 
-	gameKnowledge[0] = Table::BJ;
-	gameKnowledge[1] = Table::Poker;
+	gameKnowledge[Table::BJ]	= true;
+	gameKnowledge[Table::Poker] = true;
+	gameKnowledge[Table::Rou]	= false;
+	gameKnowledge[Table::MB]	= false;
 }
 
 Dealer::Dealer(std::string nameIn)
@@ -78,11 +80,13 @@ Dealer::Dealer(std::string nameIn)
 	employeeNumberCounter++;
 	employeeNumber = STARTING_EMPLOYEE_NUMBER + employeeNumberCounter;
 
-	gameKnowledge[0] = Table::BJ;
-	gameKnowledge[1] = Table::Poker;
+	gameKnowledge[Table::BJ] = true;
+	gameKnowledge[Table::Poker] = true;
+	gameKnowledge[Table::Rou] = false;
+	gameKnowledge[Table::MB] = false;
 }
 
-Dealer::Dealer(std::string nameIn, std::array<Table::Games, NUMBER_OF_GAMES> gameKnowledgeIn)
+Dealer::Dealer(std::string nameIn, std::array<bool, NUMBER_OF_GAMES> gameKnowledgeIn)
 	: name(nameIn), gameKnowledge(gameKnowledgeIn), pushMinutes(0), tablesAssigned(0)
 {
 	employeeNumberCounter++;
@@ -105,13 +109,13 @@ void Dealer::GenerateDealers(std::array<Dealer, NUMBER_OF_DEALERS>& dealersIn)
 	PROFILE_FUNCTION();
 	//dealersIn.reserve(NUMBER_OF_DEALERS);
 
-	dealersIn[0] = Dealer("Thomas", std::array<Table::Games, NUMBER_OF_GAMES>{Table::BJ, Table::Rou, Table::MB, Table::Poker});
-	dealersIn[1] = Dealer("Clarissa", std::array<Table::Games, NUMBER_OF_GAMES>{Table::BJ, Table::Rou, Table::MB, Table::Poker});
-	dealersIn[2] = Dealer("Tiffany", std::array<Table::Games, NUMBER_OF_GAMES>{Table::BJ, Table::Rou, Table::MB, Table::Poker});
-	dealersIn[3] = Dealer("Alex", std::array<Table::Games, NUMBER_OF_GAMES>{Table::BJ, Table::Rou, Table::MB, Table::Poker});
+	dealersIn[0] = Dealer("Thomas", std::array<bool, NUMBER_OF_GAMES>{true, true, true, true});
+	dealersIn[1] = Dealer("Clarissa", std::array<bool, NUMBER_OF_GAMES>{true, true, true, true});
+	dealersIn[2] = Dealer("Tiffany", std::array<bool, NUMBER_OF_GAMES>{true, true, true, true});
+	dealersIn[3] = Dealer("Alex", std::array<bool, NUMBER_OF_GAMES>{true, true, true, true});
 	dealersIn[4] = Dealer("Chris");
-	dealersIn[5] = Dealer("John", std::array<Table::Games, NUMBER_OF_GAMES>{Table::BJ, Table::Rou, Table::MB, Table::Poker});
-	dealersIn[6] = Dealer("Ryan", std::array<Table::Games, NUMBER_OF_GAMES>{Table::BJ, Table::Rou, Table::MB, Table::Poker});
+	dealersIn[5] = Dealer("John", std::array<bool, NUMBER_OF_GAMES>{true, true, true, true});
+	dealersIn[6] = Dealer("Ryan", std::array<bool, NUMBER_OF_GAMES>{true, true, true, true});
 	dealersIn[7] = Dealer();
 	dealersIn[8] = Dealer();
 	dealersIn[9] = Dealer();

@@ -8,6 +8,7 @@ const Log::LogLevel LOG_LEVEL = Log::Warning;		// set log level here
 Log LOG;
 #endif
 
+static bool GeneratedDealers = false;			// TODO: find a better way to generate only once
 
 //void* operator new(size_t size)
 //{
@@ -37,7 +38,11 @@ namespace PencilSim
 		std::array<std::future<void>, s_THREAD_COUNT> futures;
 
 		Table::GenerateTables(tables);
-		Dealer::GenerateDealers(dealers);
+		if (!GeneratedDealers)
+		{
+			Dealer::GenerateDealers(dealers);
+			GeneratedDealers = true;
+		}
 
 		srand(time(0));
 
@@ -73,7 +78,7 @@ namespace PencilSim
 #endif
 
 #if PEN_DEBUG
-		LOG.LogError("Highest Fitness: " + std::to_string(s_bestFitness));
+		LOG.LogError("Final Fitness: " + std::to_string(first.fitness));
 #else
 		std::cout << "    Best fitness: " << std::to_string(s_bestFitness) + "\n";
 #endif
@@ -169,11 +174,13 @@ namespace PencilSim
 
 	static bool FindGameKnowledge(const Table::Games& gameName, Dealer* dealer)
 	{
-		for (Table::Games g : dealer->gameKnowledge)
-		{
-			if (gameName == g) return true;
-		}
-		return false;
+		return dealer->gameKnowledge[gameName];
+
+		//for (bool g : dealer->gameKnowledge)
+		//{
+		//	if (gameName == g) return true;
+		//}
+		//return false;
 	}
 
 	static void SimulateAnnealing(std::array<Table, NUMBER_OF_TABLES>& tablesIn, 
@@ -239,7 +246,7 @@ namespace PencilSim
 		Log LOG;
 #endif
 
-		LOG.LogError("final Fitness: " + std::to_string(p.fitness));
+		LOG.LogWarning("final Fitness: " + std::to_string(p.fitness));
 
 		for (auto& p : p.push)
 		{

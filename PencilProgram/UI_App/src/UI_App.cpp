@@ -8,11 +8,12 @@
 namespace MyApp {
 
 	bool show_demo_window = true;
-	static ImGuiTableFlags flags = ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg;
+	//static ImGuiTableFlags flags = ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg;
+	static ImGuiTableFlags flags = ImGuiTableFlags_SizingStretchSame | ImGuiTableFlags_Resizable | ImGuiTableFlags_BordersOuter | ImGuiTableFlags_BordersV | ImGuiTableFlags_ContextMenuInBody;
 	static Push p;
-	std::array<Dealer, NUMBER_OF_DEALERS> dealers;	// stretch: figure out a way to keep this code in PenMain
+	std::array<Dealer, NUMBER_OF_DEALERS> dealers;	// TODO: figure out a way to keep this code in PenMain
 													//  no dealer pointer and move semantics?
-
+													//  also default constructor makes a list of dealers before generated is called
 	static void HelpMarker(const char* desc)
 	{
 		ImGui::TextDisabled("(?)");
@@ -23,6 +24,18 @@ namespace MyApp {
 			ImGui::PopTextWrapPos();
 			ImGui::EndTooltip();
 		}
+	}
+
+	static void PushStyleCompact()
+	{
+		ImGuiStyle& style = ImGui::GetStyle();
+		ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(style.FramePadding.x, (float)(int)(style.FramePadding.y * 0.60f)));
+		ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(style.ItemSpacing.x, (float)(int)(style.ItemSpacing.y * 0.60f)));
+	}
+
+	static void PopStyleCompact()
+	{
+		ImGui::PopStyleVar(2);
 	}
 
 	void MyRender()
@@ -43,9 +56,16 @@ namespace MyApp {
 
 		if (ImGui::Button("Create Push"))
 		{
-			p = std::move(PencilSim::PenMain(dealers));
-			//PencilSim::PenMain(p);
+			do {
+				p = std::move(PencilSim::PenMain(dealers));
+			} while (p.fitness < PencilSim::MAX_FITNESS_POSSIBLE);
 		}
+		PushStyleCompact();
+		ImGui::CheckboxFlags("ImGuiTableFlags_Resizable", &flags, ImGuiTableFlags_Resizable);
+		ImGui::CheckboxFlags("ImGuiTableFlags_BordersV", &flags, ImGuiTableFlags_BordersV);
+		ImGui::SameLine(); HelpMarker("Using the _Resizable flag automatically enables the _BordersInnerV flag as well, this is why the resize borders are still showing when unchecking this.");
+		PopStyleCompact();
+
 
 		ImGui::BeginTable("Push", 3, flags);
 		ImGui::TableSetupColumn("Table Number");
@@ -53,7 +73,7 @@ namespace MyApp {
 		ImGui::TableSetupColumn("Dealer");
 		ImGui::TableHeadersRow();
 
-		// stretch: create default push values for initial display or dont show table
+		// TODO: create default push values for initial display or dont show table
 		for (int row = 0; row < NUMBER_OF_TABLES; row++)
 		{
 			std::string name;
