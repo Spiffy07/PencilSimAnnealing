@@ -9,7 +9,9 @@ namespace MyApp {
 
 	bool show_demo_window = true;
 	static ImGuiTableFlags flags = ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg;
-	static Push p;		// stretch: this skews the starting value of employee number
+	static Push p;
+	std::array<Dealer, NUMBER_OF_DEALERS> dealers;	// stretch: figure out a way to keep this code in PenMain
+													//  no dealer pointer and move semantics?
 
 	static void HelpMarker(const char* desc)
 	{
@@ -41,7 +43,7 @@ namespace MyApp {
 
 		if (ImGui::Button("Create Push"))
 		{
-			p = std::move(PencilSim::PenMain());
+			p = std::move(PencilSim::PenMain(dealers));
 			//PencilSim::PenMain(p);
 		}
 

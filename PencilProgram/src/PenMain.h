@@ -13,7 +13,7 @@ namespace PencilSim
 	static void SimulateAnnealing(std::array<Table, NUMBER_OF_TABLES>& tablesIn, std::array<Dealer, NUMBER_OF_DEALERS>& dealersIn, Push& pushIn);
 	static void PrintPush(Push& pushIn);
 
-	Push PenMain();
+	Push PenMain(std::array<Dealer, NUMBER_OF_DEALERS>& dealers);
 	//void PenMain(Push&);
 
 	static const int s_THREAD_COUNT = 8;

@@ -7,7 +7,7 @@
 #include <iostream>
 #endif
 
-const unsigned int STARTING_EMPLOYEE_NUMBER = 100000;
+const unsigned int STARTING_EMPLOYEE_NUMBER = 100000 - NUMBER_OF_DEALERS;
 
 // static member declarations
 unsigned int Dealer::employeeNumberCounter;

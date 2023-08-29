@@ -19,7 +19,7 @@ Log LOG;
 namespace PencilSim 
 {
 
-	Push PenMain()
+	Push PenMain(std::array<Dealer, NUMBER_OF_DEALERS>& dealers)
 	//void PenMain(Push& p)
 	{
 #if PROFILING	// turn on/off profiling in pch.h
@@ -32,7 +32,7 @@ namespace PencilSim
 #endif
 
 		std::array<Table, NUMBER_OF_TABLES> tables;
-		std::array<Dealer, NUMBER_OF_DEALERS> dealers;
+		//std::array<Dealer, NUMBER_OF_DEALERS> dealers;
 		std::array<Push, s_THREAD_COUNT> results;
 		std::array<std::future<void>, s_THREAD_COUNT> futures;
 
