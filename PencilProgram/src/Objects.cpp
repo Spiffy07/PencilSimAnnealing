@@ -161,7 +161,9 @@ char* Assignment::GetTableGameName()
 	case Table::Poker:
 		return "Poker";
 	default:
+#if PEN_DEBUG
 		LOG.LogError("Error: Invalid message in final Log");
+#endif
 		return "Error!";
 	}
 }

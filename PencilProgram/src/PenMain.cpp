@@ -4,7 +4,13 @@
 #define SINGLE_THREAD
 
 #if PEN_DEBUG
-const Log::LogLevel LOG_LEVEL = Log::Warning;		// set log level here
+const Log::LogLevel LOG_LEVEL = Log::Error;		// set log level here
+Log LOG;
+#endif
+
+#define RELEASE_CONSOLE_OUTPUT 0
+#if RELEASE_CONSOLE_OUTPUT
+const Log::LogLevel LOG_LEVEL = Log::Error;		// set log level here
 Log LOG;
 #endif
 
@@ -52,8 +58,12 @@ namespace PencilSim
 
 #ifdef SINGLE_THREAD
 		SimulateAnnealing(tables, dealers, first);
-
+#if PEN_DEBUG
 		PrintPush(first);
+#endif
+#if RELEASE_CONSOLE_OUTPUT
+		PrintPush(first);
+#endif
 #else
 		for (int i = 0; i < s_THREAD_COUNT; i++)
 		{
@@ -85,11 +95,11 @@ namespace PencilSim
 	
 #if PROFILING
 		timer.Stop();
+		Instrumentor::Get().EndSession();
 #endif
 
 		// dealer name going out of scope
 
-		Instrumentor::Get().EndSession();
 		std::cout << "End of Simulated Annealing\n";
 		return first;
 	}
@@ -232,7 +242,7 @@ namespace PencilSim
 #if PEN_DEBUG
 			if (LOG_LEVEL > Log::Warning)
 				std::cout << std::this_thread::get_id() << ": ";
-			LOG.LogWarning(std::to_string(pushIn.fitness));
+			LOG.LogInfo(std::to_string(pushIn.fitness));
 #endif
 		} while (attemptNoChange < s_ATTEMPT_LIMIT);
 	}
@@ -241,9 +251,8 @@ namespace PencilSim
 	{
 		PROFILE_FUNCTION();
 #if PEN_DEBUG
-#else
-		const Log::LogLevel LOG_LEVEL = Log::Error;		// create log system here to output in release mode
-		Log LOG;
+#else 
+		LOG.SetLogLevel(LOG_LEVEL);
 #endif
 
 		LOG.LogWarning("final Fitness: " + std::to_string(p.fitness));

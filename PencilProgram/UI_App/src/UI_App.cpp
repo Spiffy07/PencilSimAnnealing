@@ -8,8 +8,18 @@
 namespace MyApp {
 
 	bool show_demo_window = true;
-	//static ImGuiTableFlags flags = ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg;
-	static ImGuiTableFlags flags = ImGuiTableFlags_SizingStretchSame | ImGuiTableFlags_Resizable | ImGuiTableFlags_BordersOuter | ImGuiTableFlags_BordersV | ImGuiTableFlags_ContextMenuInBody;
+
+
+		//table flags
+	static ImGuiTableFlags flags = 
+		ImGuiTableFlags_ContextMenuInBody |
+		ImGuiTableFlags_SizingStretchSame | 
+		ImGuiTableFlags_Resizable | 
+		ImGuiTableFlags_RowBg |
+		ImGuiTableFlags_BordersV | 
+		ImGuiTableFlags_BordersOuter | 
+		ImGuiTableFlags_NoBordersInBodyUntilResize
+		;
 	static Push p;
 	std::array<Dealer, NUMBER_OF_DEALERS> dealers;	// TODO: figure out a way to keep this code in PenMain
 													//  no dealer pointer and move semantics?
@@ -40,6 +50,8 @@ namespace MyApp {
 
 	void MyRender()
 	{
+		ImGui::DockSpaceOverViewport(ImGui::GetMainViewport());
+
 		if (show_demo_window)
 			ImGui::ShowDemoWindow(&show_demo_window);
 
@@ -48,6 +60,13 @@ namespace MyApp {
 			ImGui::End(); // early out for collapsing
 			return;
 		}
+
+		// Start of Pencil App window
+			// font 
+		ImGuiIO& io = ImGui::GetIO();		// TODO: Correctly upscale font. see https://github.com/ocornut/imgui/issues/1018
+		const float MIN_SCALE = 0.3f;
+		const float MAX_SCALE = 2.0f;
+		ImGui::DragFloat("global scale", &io.FontGlobalScale, 0.005f, MIN_SCALE, MAX_SCALE, "%.2f", ImGuiSliderFlags_AlwaysClamp); // Scale everything
 
 		ImGui::Text("This is some useful text.");               // Display some text (you can use a format strings too)
 		ImGui::Checkbox("Demo Window", &show_demo_window);      // Edit bools storing our window open/close state
@@ -60,11 +79,29 @@ namespace MyApp {
 				p = std::move(PencilSim::PenMain(dealers));
 			} while (p.fitness < PencilSim::MAX_FITNESS_POSSIBLE);
 		}
-		PushStyleCompact();
-		ImGui::CheckboxFlags("ImGuiTableFlags_Resizable", &flags, ImGuiTableFlags_Resizable);
-		ImGui::CheckboxFlags("ImGuiTableFlags_BordersV", &flags, ImGuiTableFlags_BordersV);
-		ImGui::SameLine(); HelpMarker("Using the _Resizable flag automatically enables the _BordersInnerV flag as well, this is why the resize borders are still showing when unchecking this.");
-		PopStyleCompact();
+
+			// buttons for testing flags
+		//PushStyleCompact();
+		//ImGui::CheckboxFlags("ImGuiTableFlags_Resizable", &flags, ImGuiTableFlags_Resizable);
+		//ImGui::SameLine(); 
+		//ImGui::CheckboxFlags("ImGuiTableFlags_SizingStretchSame", &flags, ImGuiTableFlags_SizingStretchSame);
+		//ImGui::CheckboxFlags("ImGuiTableFlags_ContextMenuInBody", &flags, ImGuiTableFlags_ContextMenuInBody);
+		//ImGui::SameLine(); 
+		//ImGui::CheckboxFlags("ImGuiTableFlags_RowBg", &flags, ImGuiTableFlags_RowBg);
+		//ImGui::CheckboxFlags("ImGuiTableFlags_BordersV", &flags, ImGuiTableFlags_BordersV);
+		//ImGui::SameLine(); 
+		//ImGui::CheckboxFlags("ImGuiTableFlags_BordersOuter", &flags, ImGuiTableFlags_BordersOuter);
+		//ImGui::CheckboxFlags("ImGuiTableFlags_NoBordersInBodyUntilResize", &flags, ImGuiTableFlags_NoBordersInBodyUntilResize);
+		//ImGui::SameLine(); 
+		//HelpMarker("Using the _Resizable flag automatically enables the _BordersInnerV flag as well, this is why the resize borders are still showing when unchecking this.");
+		//PopStyleCompact();
+		 
+			 
+			 
+			 
+			 
+			 
+			
 
 
 		ImGui::BeginTable("Push", 3, flags);
