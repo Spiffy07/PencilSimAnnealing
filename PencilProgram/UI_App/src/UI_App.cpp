@@ -5,25 +5,11 @@
 #include "objects.h"
 #include "PenMain.h"
 
+using namespace std::chrono_literals;
+
 namespace MyApp {
-
-	bool show_demo_window = true;
-
-
-		//table flags
-	static ImGuiTableFlags flags = 
-		ImGuiTableFlags_ContextMenuInBody |
-		ImGuiTableFlags_SizingStretchSame | 
-		ImGuiTableFlags_Resizable | 
-		ImGuiTableFlags_RowBg |
-		ImGuiTableFlags_BordersV | 
-		ImGuiTableFlags_BordersOuter | 
-		ImGuiTableFlags_NoBordersInBodyUntilResize
-		;
-	static Push p;
-	std::array<Dealer, NUMBER_OF_DEALERS> dealers;	// TODO: figure out a way to keep this code in PenMain
-													//  no dealer pointer and move semantics?
-													//  also default constructor makes a list of dealers before generated is called
+		
+		// Copied from demo
 	static void HelpMarker(const char* desc)
 	{
 		ImGui::TextDisabled("(?)");
@@ -46,6 +32,38 @@ namespace MyApp {
 	static void PopStyleCompact()
 	{
 		ImGui::PopStyleVar(2);
+	}
+
+
+		// my new/altered code
+	// create push button
+	static Push p;
+	static Push q = p;
+	static std::future<void> future;		
+	static std::future_status status;
+	static bool buttonDisabled = false;
+	static bool buttonPressed = false;
+
+	bool show_demo_window = true;
+
+	//table flags
+	static ImGuiTableFlags flags =
+		ImGuiTableFlags_ContextMenuInBody |
+		ImGuiTableFlags_SizingStretchSame |
+		ImGuiTableFlags_Resizable |
+		ImGuiTableFlags_RowBg |
+		ImGuiTableFlags_BordersV |
+		ImGuiTableFlags_BordersOuter |
+		ImGuiTableFlags_NoBordersInBodyUntilResize
+		;
+
+	std::array<Dealer, NUMBER_OF_DEALERS> dealers;	// TODO: figure out a way to keep this code in PenMain
+													//  no dealer pointer and move semantics?
+													//  also default constructor makes a list of dealers before generated is called
+
+	void MySetup()
+	{
+
 	}
 
 	void MyRender()
@@ -73,12 +91,29 @@ namespace MyApp {
 		ImGui::SameLine();
 		HelpMarker("Use this to show/hide the demo window for a throrough reference.");
 
+		
+		if (buttonPressed && future.wait_for(0s) != std::future_status::ready)	// TODO: wait_for() will crash if called
+																				//  early exit due to 'buttonPressed'
+		{
+			ImGui::BeginDisabled();
+			buttonDisabled = true;
+		}
+		else p = q;
 		if (ImGui::Button("Create Push"))
 		{
-			do {
-				p = std::move(PencilSim::PenMain(dealers));
-			} while (p.fitness < PencilSim::MAX_FITNESS_POSSIBLE);
+			buttonPressed = true;
+			future = std::async([&]() {
+				do {
+					q = std::move(PencilSim::PenMain(dealers));
+				} while (q.fitness < PencilSim::MAX_FITNESS_POSSIBLE);
+			});
 		}
+		if (buttonDisabled)
+		{
+			ImGui::EndDisabled();
+			buttonDisabled = false;
+		}
+
 
 			// buttons for testing flags
 		//PushStyleCompact();
@@ -96,14 +131,6 @@ namespace MyApp {
 		//HelpMarker("Using the _Resizable flag automatically enables the _BordersInnerV flag as well, this is why the resize borders are still showing when unchecking this.");
 		//PopStyleCompact();
 		 
-			 
-			 
-			 
-			 
-			 
-			
-
-
 		ImGui::BeginTable("Push", 3, flags);
 		ImGui::TableSetupColumn("Table Number");
 		ImGui::TableSetupColumn("Game");

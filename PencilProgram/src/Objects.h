@@ -76,6 +76,8 @@ public:
 	int fitness = 0;
 
 	Push() = default;
+	Push(Push&) = default;
+	Push& operator=(Push&) = default;
 	Push(Push&&) = default;				// move constructor
 	Push& operator=(Push&&) = default;	// move assignment operator
 
