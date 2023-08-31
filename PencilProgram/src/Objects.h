@@ -27,6 +27,9 @@ public:
 	Table(int numIn, Games gameName);
 	Table(const Table& table);
 
+	bool operator==(Table& other);
+	bool operator!=(Table& other);
+
 	static void GenerateTables(std::array<Table, NUMBER_OF_TABLES>& tablesIn);
 };
 
@@ -37,7 +40,7 @@ public:
 	static unsigned int employeeNumberCounter;
 	std::string name;
 	int employeeNumber;
-	std::array<bool, NUMBER_OF_GAMES> gameKnowledge;				// Determine list of games and set vector.resize
+	std::array<bool, NUMBER_OF_GAMES> gameKnowledge;	// Determine list of games
 	int pushMinutes;
 	int tablesAssigned;
 
@@ -63,6 +66,9 @@ public:
 	Assignment();
 	Assignment(Table& t, Dealer& d);
 
+	bool operator==(Assignment& other);
+	bool operator!=(Assignment& other);
+
 	int GetTableNumber();
 	char* GetTableGameName();
 	std::string GetDealerName();
@@ -78,8 +84,12 @@ public:
 	Push() = default;
 	Push(Push&) = default;
 	Push& operator=(Push&) = default;
+
 	Push(Push&&) = default;				// move constructor
 	Push& operator=(Push&&) = default;	// move assignment operator
+
+	bool operator==(Push& other);
+	bool operator!=(Push& other);
 
 };
 

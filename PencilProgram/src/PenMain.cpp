@@ -8,7 +8,7 @@ const Log::LogLevel LOG_LEVEL = Log::Error;		// set log level here
 Log LOG;
 #endif
 
-#define RELEASE_CONSOLE_OUTPUT 0
+#define RELEASE_CONSOLE_OUTPUT 1
 #if RELEASE_CONSOLE_OUTPUT
 const Log::LogLevel LOG_LEVEL = Log::Error;		// set log level here
 Log LOG;
@@ -90,7 +90,7 @@ namespace PencilSim
 #if PEN_DEBUG
 		LOG.LogError("Final Fitness: " + std::to_string(first.fitness));
 #else
-		std::cout << "    Best fitness: " << std::to_string(s_bestFitness) + "\n";
+		std::cout << " Final fitness: " << std::to_string(first.fitness) + "\n";
 #endif
 	
 #if PROFILING
@@ -251,7 +251,7 @@ namespace PencilSim
 	{
 		PROFILE_FUNCTION();
 #if PEN_DEBUG
-#else 
+#elseif RELEASE_CONSOLE_OUTPUT
 		LOG.SetLogLevel(LOG_LEVEL);
 #endif
 

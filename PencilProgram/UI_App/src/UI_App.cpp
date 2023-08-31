@@ -2,7 +2,7 @@
 
 #include <imgui.h>
 
-#include "objects.h"
+#include "Objects.h"
 #include "PenMain.h"
 
 using namespace std::chrono_literals;
@@ -98,7 +98,8 @@ namespace MyApp {
 			ImGui::BeginDisabled();
 			buttonDisabled = true;
 		}
-		else p = q;
+		else if (p != q) 
+			p = q;
 		if (ImGui::Button("Create Push"))
 		{
 			buttonPressed = true;

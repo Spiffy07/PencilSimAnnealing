@@ -59,6 +59,27 @@ void Table::GenerateTables(std::array<Table, NUMBER_OF_TABLES>& tablesIn)
 	tablesIn[19] = Table(120, Poker);
 }
 
+bool Table::operator==(Table& other)
+{
+	if (number != other.number)
+		return false;
+
+	if (gameName != other.gameName)
+		return false;
+
+	return true;
+}
+
+bool Table::operator!=(Table& other)
+{
+	if (number != other.number)
+		return true;
+
+	if (gameName != other.gameName)
+		return true;
+
+	return false;
+}
 
 	// Dealer
 Dealer::Dealer()
@@ -142,6 +163,28 @@ Assignment::Assignment(Table& t, Dealer& d)
 {
 }
 
+bool Assignment::operator==(Assignment& other)
+{
+	if (aDealerPtr != other.aDealerPtr)
+		return false;
+
+	if (aTable != other.aTable)
+		return false;
+
+	return true;
+}
+
+bool Assignment::operator!=(Assignment& other)
+{
+	if (aDealerPtr != other.aDealerPtr)
+		return true;
+
+	if (aTable != other.aTable)
+		return true;
+
+	return false;
+}
+
 int Assignment::GetTableNumber()
 {
 	return this->aTable.number;
@@ -177,11 +220,34 @@ std::string Assignment::GetDealerName()
 }
 
 
-//	// Push
-//Push::Push(Push&& other)
-//{
-//
-//}
+	// Push
+bool Push::operator==(Push& other)
+{
+	if (fitness != other.fitness)
+		return false;
+
+	for (int i = 0; i < NUMBER_OF_DEALERS; i++)
+	{
+		if (push[i] != other.push[i])
+			return false;
+	}
+
+	return true;
+}
+
+bool Push::operator!=(Push& other)
+{
+	if (fitness != other.fitness)
+		return true;
+
+	for (int i = 0; i < NUMBER_OF_DEALERS; i++)
+	{
+		if (push[i] != other.push[i])
+			return true;
+	}
+
+	return false;
+}
 
 //Timer::Timer()
 //{
