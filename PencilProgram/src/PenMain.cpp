@@ -6,9 +6,10 @@
 #if PEN_DEBUG
 const Log::LogLevel LOG_LEVEL = Log::Error;		// set log level here
 Log LOG;
+#else
+#define RELEASE_CONSOLE_OUTPUT 1
 #endif
 
-#define RELEASE_CONSOLE_OUTPUT 1
 #if RELEASE_CONSOLE_OUTPUT
 const Log::LogLevel LOG_LEVEL = Log::Error;		// set log level here
 Log LOG;
@@ -251,7 +252,7 @@ namespace PencilSim
 	{
 		PROFILE_FUNCTION();
 #if PEN_DEBUG
-#elseif RELEASE_CONSOLE_OUTPUT
+#elif RELEASE_CONSOLE_OUTPUT
 		LOG.SetLogLevel(LOG_LEVEL);
 #endif
 
