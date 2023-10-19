@@ -1,3 +1,5 @@
+#pragma once 
+
 #include "pch.h"
 //#include <string>
 //#include <vector>
@@ -14,7 +16,7 @@ class Table
 public:
 	enum Games
 	{
-		BJ, Rou, MB, Poker
+		BJ, Poker, Rou, MB
 	};
 	int number;
 	Games gameName;
@@ -24,6 +26,9 @@ public:
 	Table();
 	Table(int numIn, Games gameName);
 	Table(const Table& table);
+
+	bool operator==(Table& other);
+	bool operator!=(Table& other);
 
 	static void GenerateTables(std::array<Table, NUMBER_OF_TABLES>& tablesIn);
 };
@@ -35,18 +40,21 @@ public:
 	static unsigned int employeeNumberCounter;
 	std::string name;
 	int employeeNumber;
-	std::array<Table::Games, NUMBER_OF_GAMES> gameKnowledge;				// Determine list of games and set vector.resize
+	std::array<bool, NUMBER_OF_GAMES> gameKnowledge;	// Determine list of games
 	int pushMinutes;
 	int tablesAssigned;
 
 		// constructors
 	Dealer();
 	Dealer(std::string nameIn);
-	Dealer(std::string nameIn, std::array<Table::Games, NUMBER_OF_GAMES> gameKnowledgeIn);
+	Dealer(std::string nameIn, std::array<bool, NUMBER_OF_GAMES> gameKnowledgeIn);
 	Dealer(const Dealer& dealer);
+	Dealer(Dealer&&) = default;			// move constructor
+	Dealer& operator=(Dealer&&) = default;
 
 	static void GenerateDealers(std::array<Dealer, NUMBER_OF_DEALERS>& dealersIn);
 };
+
 
 
 class Assignment
@@ -57,7 +65,13 @@ public:
 
 	Assignment();
 	Assignment(Table& t, Dealer& d);
-	Assignment(Table& t, Dealer* dPtr);
+
+	bool operator==(Assignment& other);
+	bool operator!=(Assignment& other);
+
+	int GetTableNumber();
+	char* GetTableGameName();
+	std::string GetDealerName();
 };
 
 
@@ -67,7 +81,16 @@ public:
 	std::array<Assignment, NUMBER_OF_TABLES> push;
 	int fitness = 0;
 
-	//Push() = delete;
+	Push() = default;
+	Push(Push&) = default;
+	Push& operator=(Push&) = default;
+
+	Push(Push&&) = default;				// move constructor
+	Push& operator=(Push&&) = default;	// move assignment operator
+
+	bool operator==(Push& other);
+	bool operator!=(Push& other);
+
 };
 
 

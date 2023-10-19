@@ -7,10 +7,12 @@
 #include <iostream>
 #endif
 
-const unsigned int STARTING_EMPLOYEE_NUMBER = 100000;
+const unsigned int STARTING_EMPLOYEE_NUMBER = 100000 - NUMBER_OF_DEALERS;
 
+// static member declarations
+unsigned int Dealer::employeeNumberCounter;
 
-// constructors
+	// Table
 Table::Table()
 	: number(0), gameName(BJ)
 {
@@ -57,8 +59,29 @@ void Table::GenerateTables(std::array<Table, NUMBER_OF_TABLES>& tablesIn)
 	tablesIn[19] = Table(120, Poker);
 }
 
+bool Table::operator==(Table& other)
+{
+	if (number != other.number)
+		return false;
 
-	// constructors
+	if (gameName != other.gameName)
+		return false;
+
+	return true;
+}
+
+bool Table::operator!=(Table& other)
+{
+	if (number != other.number)
+		return true;
+
+	if (gameName != other.gameName)
+		return true;
+
+	return false;
+}
+
+	// Dealer
 Dealer::Dealer()
 	: pushMinutes(0), tablesAssigned(0)
 {
@@ -66,8 +89,10 @@ Dealer::Dealer()
 	employeeNumber = STARTING_EMPLOYEE_NUMBER + employeeNumberCounter;
 	name = std::to_string(employeeNumber);
 
-	gameKnowledge[0] = Table::BJ;
-	gameKnowledge[1] = Table::Poker;
+	gameKnowledge[Table::BJ]	= true;
+	gameKnowledge[Table::Poker] = true;
+	gameKnowledge[Table::Rou]	= false;
+	gameKnowledge[Table::MB]	= false;
 }
 
 Dealer::Dealer(std::string nameIn)
@@ -76,11 +101,13 @@ Dealer::Dealer(std::string nameIn)
 	employeeNumberCounter++;
 	employeeNumber = STARTING_EMPLOYEE_NUMBER + employeeNumberCounter;
 
-	gameKnowledge[0] = Table::BJ;
-	gameKnowledge[1] = Table::Poker;
+	gameKnowledge[Table::BJ] = true;
+	gameKnowledge[Table::Poker] = true;
+	gameKnowledge[Table::Rou] = false;
+	gameKnowledge[Table::MB] = false;
 }
 
-Dealer::Dealer(std::string nameIn, std::array<Table::Games, NUMBER_OF_GAMES> gameKnowledgeIn)
+Dealer::Dealer(std::string nameIn, std::array<bool, NUMBER_OF_GAMES> gameKnowledgeIn)
 	: name(nameIn), gameKnowledge(gameKnowledgeIn), pushMinutes(0), tablesAssigned(0)
 {
 	employeeNumberCounter++;
@@ -103,13 +130,13 @@ void Dealer::GenerateDealers(std::array<Dealer, NUMBER_OF_DEALERS>& dealersIn)
 	PROFILE_FUNCTION();
 	//dealersIn.reserve(NUMBER_OF_DEALERS);
 
-	dealersIn[0] = Dealer("Thomas", std::array<Table::Games, NUMBER_OF_GAMES>{Table::BJ, Table::Rou, Table::MB, Table::Poker});
-	dealersIn[1] = Dealer("Clarissa", std::array<Table::Games, NUMBER_OF_GAMES>{Table::BJ, Table::Rou, Table::MB, Table::Poker});
-	dealersIn[2] = Dealer("Tiffany", std::array<Table::Games, NUMBER_OF_GAMES>{Table::BJ, Table::Rou, Table::MB, Table::Poker});
-	dealersIn[3] = Dealer("Alex", std::array<Table::Games, NUMBER_OF_GAMES>{Table::BJ, Table::Rou, Table::MB, Table::Poker});
+	dealersIn[0] = Dealer("Thomas", std::array<bool, NUMBER_OF_GAMES>{true, true, true, true});
+	dealersIn[1] = Dealer("Clarissa", std::array<bool, NUMBER_OF_GAMES>{true, true, true, true});
+	dealersIn[2] = Dealer("Tiffany", std::array<bool, NUMBER_OF_GAMES>{true, true, true, true});
+	dealersIn[3] = Dealer("Alex", std::array<bool, NUMBER_OF_GAMES>{true, true, true, true});
 	dealersIn[4] = Dealer("Chris");
-	dealersIn[5] = Dealer("John", std::array<Table::Games, NUMBER_OF_GAMES>{Table::BJ, Table::Rou, Table::MB, Table::Poker});
-	dealersIn[6] = Dealer("Ryan", std::array<Table::Games, NUMBER_OF_GAMES>{Table::BJ, Table::Rou, Table::MB, Table::Poker});
+	dealersIn[5] = Dealer("John", std::array<bool, NUMBER_OF_GAMES>{true, true, true, true});
+	dealersIn[6] = Dealer("Ryan", std::array<bool, NUMBER_OF_GAMES>{true, true, true, true});
 	dealersIn[7] = Dealer();
 	dealersIn[8] = Dealer();
 	dealersIn[9] = Dealer();
@@ -125,6 +152,7 @@ void Dealer::GenerateDealers(std::array<Dealer, NUMBER_OF_DEALERS>& dealersIn)
 	dealersIn[19] = Dealer();
 }
 
+	// Assignment
 Assignment::Assignment()
 	: aTable(Table::Table()), aDealerPtr(nullptr)
 {
@@ -135,11 +163,91 @@ Assignment::Assignment(Table& t, Dealer& d)
 {
 }
 
-Assignment::Assignment(Table& t, Dealer* dPtr) 
-	: aTable(t), aDealerPtr(dPtr)
+bool Assignment::operator==(Assignment& other)
 {
+	if (aDealerPtr != other.aDealerPtr)
+		return false;
+
+	if (aTable != other.aTable)
+		return false;
+
+	return true;
 }
 
+bool Assignment::operator!=(Assignment& other)
+{
+	if (aDealerPtr != other.aDealerPtr)
+		return true;
+
+	if (aTable != other.aTable)
+		return true;
+
+	return false;
+}
+
+int Assignment::GetTableNumber()
+{
+	return this->aTable.number;
+}
+
+char* Assignment::GetTableGameName()
+{
+
+	switch (this->aTable.gameName)
+	{
+	case Table::BJ:
+		return "BJ";
+	case Table::Rou:
+		return "Rou";
+	case Table::MB:
+		return "MB";
+	case Table::Poker:
+		return "Poker";
+	default:
+#if PEN_DEBUG
+		LOG.LogError("Error: Invalid message in final Log");
+#endif
+		return "Error!";
+	}
+}
+
+std::string Assignment::GetDealerName()
+{
+	if (this->aDealerPtr->name.empty())
+		return "Invalid Dealer name";
+	else
+		return this->aDealerPtr->name;
+}
+
+
+	// Push
+bool Push::operator==(Push& other)
+{
+	if (fitness != other.fitness)
+		return false;
+
+	for (int i = 0; i < NUMBER_OF_DEALERS; i++)
+	{
+		if (push[i] != other.push[i])
+			return false;
+	}
+
+	return true;
+}
+
+bool Push::operator!=(Push& other)
+{
+	if (fitness != other.fitness)
+		return true;
+
+	for (int i = 0; i < NUMBER_OF_DEALERS; i++)
+	{
+		if (push[i] != other.push[i])
+			return true;
+	}
+
+	return false;
+}
 
 //Timer::Timer()
 //{
