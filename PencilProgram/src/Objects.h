@@ -20,11 +20,12 @@ public:
 	Games gameName;
 
 	// constructors
-	Table() = delete;			// do not allow blank Table object
+	//Table() = delete;			// do not allow blank Table object
+	Table();
 	Table(int numIn, Games gameName);
 	Table(const Table& table);
 
-	static void GenerateTables(std::vector<Table>& tablesIn);
+	static void GenerateTables(std::array<Table, NUMBER_OF_TABLES>& tablesIn);
 };
 
 
@@ -34,17 +35,17 @@ public:
 	static unsigned int employeeNumberCounter;
 	std::string name;
 	int employeeNumber;
-	std::vector<Table::Games> gameKnowledge;				// Determine list of games and set vector.resize
+	std::array<Table::Games, NUMBER_OF_GAMES> gameKnowledge;				// Determine list of games and set vector.resize
 	int pushMinutes;
 	int tablesAssigned;
 
 		// constructors
 	Dealer();
 	Dealer(std::string nameIn);
-	Dealer(std::string nameIn, std::vector<Table::Games> gameKnowledgeIn);
+	Dealer(std::string nameIn, std::array<Table::Games, NUMBER_OF_GAMES> gameKnowledgeIn);
 	Dealer(const Dealer& dealer);
 
-	static void GenerateDealers(std::vector<Dealer>& dealersIn);
+	static void GenerateDealers(std::array<Dealer, NUMBER_OF_DEALERS>& dealersIn);
 };
 
 
@@ -54,7 +55,7 @@ public:
 	Table aTable;
 	Dealer* aDealerPtr;
 
-	Assignment() = delete;
+	Assignment();
 	Assignment(Table& t, Dealer& d);
 	Assignment(Table& t, Dealer* dPtr);
 };
@@ -63,7 +64,7 @@ public:
 class Push
 {
 public:
-	std::vector<Assignment> push;
+	std::array<Assignment, NUMBER_OF_TABLES> push;
 	int fitness = 0;
 
 	//Push() = delete;
@@ -71,11 +72,13 @@ public:
 
 
 
-struct Timer
-{
-	std::chrono::time_point<std::chrono::steady_clock> start, end;
-	std::chrono::duration<float> duration;
-
-	Timer();
-	~Timer();
-};
+//struct Timer
+//{
+//	std::chrono::time_point<std::chrono::steady_clock> start, end;
+//	std::chrono::duration<float> duration;
+//
+//	Timer();
+//	~Timer();
+//
+//	void endTimer();
+//};

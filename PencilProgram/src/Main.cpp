@@ -1,22 +1,20 @@
+// $(SolutionDir)bin\intermediates\$(Platform)\$(Configuration)
 #include "pch.h"
-//#include <iostream>
-//#include <thread>
-#include "Objects.h"
-#include "LogExtern.h"
 
+#include "Objects.h"
 
 #if PEN_DEBUG
-const Log::LogLevel LOG_LEVEL = Log::Warning;		// set log level here
+const Log::LogLevel LOG_LEVEL = Log::Error;		// set log level here
 Log LOG;
 #endif
 
 // static member declarations
 unsigned int Dealer::employeeNumberCounter;
 
-static Push PopulateTables(std::vector<Table>& tables, std::vector<Dealer>& dealers);
-static void CalculateFitness(Push& push, std::vector<Dealer>& dealers);
+static Push PopulateTables(std::array<Table, NUMBER_OF_TABLES>& tables, std::array<Dealer, NUMBER_OF_DEALERS>& dealers);
+static void CalculateFitness(Push& push, std::array<Dealer, NUMBER_OF_DEALERS>& dealers);
 static bool FindGameKnowledge(const Table::Games& gameName, Dealer* dealerPtr);
-static void SimulateAnnealing(std::vector<Table>& tablesIn, std::vector<Dealer>& dealersIn, Push& pushIn);
+static void SimulateAnnealing(std::array<Table, NUMBER_OF_TABLES>& tablesIn, std::array<Dealer, NUMBER_OF_DEALERS>& dealersIn, Push& pushIn);
 static void PrintPush(Push& pushIn);
 
 static const int s_THREAD_COUNT = 8;
@@ -26,35 +24,52 @@ static const double s_STARTING_TEMPURATURE = 5000;	// starting temp, higher incr
 static const double s_e = 2.718281828;
 static int s_bestFitness = 0;						// highest found fitness
 static bool s_calcFitnessLock = false;
+static std::mutex s_DealersMutex;
 
+//void* operator new(size_t size)
+//{
+//	std::cout << "------------ Allocating " << size << " bytes -------------\n";
+//
+//	return malloc(size);
+//}
 
 int main()
 {
-	Timer t;
+	Instrumentor::Get().BeginSession("Profile");
+	InstrumentationTimer timer("Main");
+
 #if PEN_DEBUG
 	LOG.SetLogLevel(LOG_LEVEL);
 #endif
 
-	std::vector<Table> tables;
-	std::vector<Dealer> dealers;
-	std::vector<Push> results;
-	std::vector<std::thread> threads;
+	std::array<Table, NUMBER_OF_TABLES> tables;
+	std::array<Dealer, NUMBER_OF_DEALERS> dealers;
+	std::array<Push, s_THREAD_COUNT> results;
+	std::array<std::future<void>, s_THREAD_COUNT> futures;
+
 	Table::GenerateTables(tables);
 	Dealer::GenerateDealers(dealers);
 
 	srand(time(0));
-	results.reserve(s_THREAD_COUNT);					
-	threads.reserve(s_THREAD_COUNT);
+
 	Push first = PopulateTables(tables, dealers);
 
 	CalculateFitness(first, dealers);
 	for (int i = 0; i < s_THREAD_COUNT; i++)
 	{
-		results.push_back(first);					// copy original Push to prevent scoping issue
-		threads.emplace_back([&tables, &dealers, &results, i]() {SimulateAnnealing(tables, dealers, results[i]); });
+		results[i] =first;					// copy original Push to prevent scoping issue
 	}
+	for (int i = 0; i < s_THREAD_COUNT - 1; i++)
+	{
+		std::cout << "\n" << "thread: " << i << "\n";
+		futures[i] = std::async(std::launch::async, 
+			SimulateAnnealing, tables, dealers, std::ref(results[i]));
+	}
+	futures[s_THREAD_COUNT - 1] = std::async(std::launch::async, 
+		SimulateAnnealing, tables, dealers, std::ref(results[s_THREAD_COUNT - 1]));
 
-	for (auto& t : threads) t.join();
+	for (auto& f : futures)
+		f.wait();
 
 #if PEN_DEBUG
 	for (auto& p : results)
@@ -67,35 +82,44 @@ int main()
 		std::cout << std::to_string(p.fitness) + "\n";
 	std::cout << "    Best fitness: " << std::to_string(s_bestFitness) + "\n";
 #endif
-
-	t.~Timer();
+	
+	timer.Stop();
+	Instrumentor::Get().EndSession();
 	std::cout << "End of Program\n";
 	std::cin.get();
 	return 0;
 }
 
 
-static Push PopulateTables(std::vector<Table>& tables, std::vector<Dealer>& dealers)
+static Push PopulateTables(std::array<Table, NUMBER_OF_TABLES>& tables, std::array<Dealer, NUMBER_OF_DEALERS>& dealers)
 {
+	PROFILE_FUNCTION();
 	Push p;
-	p.push.reserve(NUMBER_OF_TABLES);
-	for (Table& t : tables)
+	for (int i = 0; i < NUMBER_OF_TABLES; i++)
 	{
-		p.push.emplace_back(t, dealers[rand() % 10]);
+		p.push[i] = { tables[i], dealers[rand() % NUMBER_OF_DEALERS] };
 	}   
 
 	return p;
 }
 
-static void CalculateFitness(Push& push, std::vector<Dealer>& dealers)
+static void CalculateFitness(Push& push, std::array<Dealer, NUMBER_OF_DEALERS>& dealers)
 {
-	using namespace std::chrono_literals;
+	//PROFILE_FUNCTION();	// severely slows down due to calling every iteration
+
+			/* due to std::async passing by value,
+				the std::vector<Dealer>& needed for the function call was
+				actually passed by value (copied) 
+				meaning no lock or mutex is needed*/
+	//std::lock_guard<std::mutex> lock(s_DealersMutex);	
+	
+	//using namespace std::chrono_literals;
 	//Timer timer;													// Runs everytime
-	while (s_calcFitnessLock)
-	{
-		std::this_thread::sleep_for(5ms);
-	}
-	s_calcFitnessLock = true;
+	//while (s_calcFitnessLock)
+	//{
+	//	std::this_thread::sleep_for(5ms);
+	//}
+	//s_calcFitnessLock = true;
 
 	push.fitness = 0;			// initialize and/or reset to zero
 	for (Dealer& d : dealers) d.tablesAssigned = 0;		// reset assigned tables to zero ***********
@@ -137,7 +161,7 @@ static void CalculateFitness(Push& push, std::vector<Dealer>& dealers)
 		if (d.tablesAssigned > 1)
 			push.fitness -= (d.tablesAssigned - 1) * 50;	// -50 per extra assigned table
 	}
-	s_calcFitnessLock = false;
+	//s_calcFitnessLock = false;
 
 #if PEN_DEBUG
 	LOG.LogInfo("Fitness: " + std::to_string(push.fitness));		// runs literally every iteration
@@ -153,8 +177,11 @@ static bool FindGameKnowledge(const Table::Games& gameName, Dealer* dealerPtr)
 	return false;
 }
 
-static void SimulateAnnealing(std::vector<Table>& tablesIn, std::vector<Dealer>& dealersIn, Push& pushIn)
+static void SimulateAnnealing(std::array<Table, NUMBER_OF_TABLES>& tablesIn, 
+	std::array<Dealer, NUMBER_OF_DEALERS>& dealersIn, Push& pushIn)
 {
+	PROFILE_FUNCTION();
+
 	int changeCount;
 	int attemptCount;
 	int attemptNoChange;
@@ -206,9 +233,10 @@ static void SimulateAnnealing(std::vector<Table>& tablesIn, std::vector<Dealer>&
 
 static void PrintPush(Push& p)
 {
+	PROFILE_FUNCTION();
+
 #if PEN_DEBUG
 	LOG.LogError("final Fitness: " + std::to_string(p.fitness));
-	//LOG.LogWarning("Highest Fitness: " + std::to_string(bestFitness));
 
 	for (auto& p : p.push)
 	{
