@@ -137,9 +137,9 @@ void Dealer::GenerateDealers(std::array<Dealer, NUMBER_OF_DEALERS>& dealersIn)
 	dealersIn[4] = Dealer("Chris");
 	dealersIn[5] = Dealer("John", std::array<bool, NUMBER_OF_GAMES>{true, true, true, true});
 	dealersIn[6] = Dealer("Ryan", std::array<bool, NUMBER_OF_GAMES>{true, true, true, true});
-	dealersIn[7] = Dealer();
-	dealersIn[8] = Dealer();
-	dealersIn[9] = Dealer();
+	dealersIn[7] = Dealer("Anthony", std::array<bool, NUMBER_OF_GAMES>{true, true, true, true});
+	dealersIn[8] = Dealer("Chad", std::array<bool, NUMBER_OF_GAMES>{true, true, true, true});
+	dealersIn[9] = Dealer("Kim", std::array<bool, NUMBER_OF_GAMES>{true, true, true, true});
 	dealersIn[10] = Dealer();
 	dealersIn[11] = Dealer();
 	dealersIn[12] = Dealer();
@@ -150,6 +150,11 @@ void Dealer::GenerateDealers(std::array<Dealer, NUMBER_OF_DEALERS>& dealersIn)
 	dealersIn[17] = Dealer();
 	dealersIn[18] = Dealer();
 	dealersIn[19] = Dealer();
+	dealersIn[20] = Dealer();
+	dealersIn[21] = Dealer();
+	dealersIn[22] = Dealer();
+	dealersIn[23] = Dealer();
+	dealersIn[24] = Dealer();
 }
 
 	// Assignment
@@ -226,7 +231,7 @@ bool Push::operator==(Push& other)
 	if (fitness != other.fitness)
 		return false;
 
-	for (int i = 0; i < NUMBER_OF_DEALERS; i++)
+	for (int i = 0; i < NUMBER_OF_TABLES; i++)
 	{
 		if (push[i] != other.push[i])
 			return false;
@@ -240,7 +245,7 @@ bool Push::operator!=(Push& other)
 	if (fitness != other.fitness)
 		return true;
 
-	for (int i = 0; i < NUMBER_OF_DEALERS; i++)
+	for (int i = 0; i < NUMBER_OF_TABLES; i++)
 	{
 		if (push[i] != other.push[i])
 			return true;

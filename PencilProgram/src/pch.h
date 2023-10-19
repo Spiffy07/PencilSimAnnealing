@@ -11,7 +11,7 @@
 #include "LogExtern.h"
 
 #if PEN_DEBUG
-#define PROFILING 1
+#define PROFILING 0
 #endif
 #if PROFILING
 #define PROFILE_SCOPE(name) InstrumentationTimer timer##__LINE__(name)
