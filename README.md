@@ -2,6 +2,9 @@
 This program was designed to simulate assigning workers (Dealer) to a assignment (Table). The role of assigning was refered to as the "Pencil". 
 Each Dealer has a list of games that they are qualified to deal and each table will have exactly one game assigned.
 
+**Update** - I am currently implementing a Gui using "Dear ImGui". It's a work in progress, however a basic table can now be generated.
+
+
 In this C++ program, Simulated annealing was used to iterate numerous cycles to attempt to find the optimal assignments based on the available pool of dealers to the list of tables.
 the following concepts were implemented in this project:
 - Simulated annealing
@@ -20,3 +23,4 @@ This program currently outputs 8 possible optimals (though probably not best due
 Tools:
 - Visual Studios Community 2022
 - Chrome://tracing
+- ** Dear ImGui
