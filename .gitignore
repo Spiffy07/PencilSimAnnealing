@@ -29,3 +29,5 @@ PencilProgram/.vs/
 /PencilProgram/bin/intermediates/x64/Debug/PencilSi.65F6D3C4.tlog/CL.command.1.tlog
 /.vs
 /PencilProgram/results.json
+/PencilProgram/logic.docx
+*.tmp
