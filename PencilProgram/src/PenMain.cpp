@@ -4,7 +4,7 @@
 #define SINGLE_THREAD
 
 #if PEN_DEBUG
-const Log::LogLevel LOG_LEVEL = Log::Error;		// set log level here
+const Log::LogLevel LOG_LEVEL = Log::Info;		// set log level here
 Log LOG;
 #else
 #define RELEASE_CONSOLE_OUTPUT 1
@@ -59,12 +59,18 @@ namespace PencilSim
 
 #ifdef SINGLE_THREAD
 		SimulateAnnealing(tables, dealers, first);
-#if PEN_DEBUG
+
+		//CalculateFitness(first, dealers);
+
+		for (Dealer& d : dealers)
+			d.ChangePushMinutes();
+
+	#if PEN_DEBUG
 		PrintPush(first);
-#endif
-#if RELEASE_CONSOLE_OUTPUT
+	#endif
+	#if RELEASE_CONSOLE_OUTPUT
 		PrintPush(first);
-#endif
+	#endif
 #else
 		for (int i = 0; i < s_THREAD_COUNT; i++)
 		{
@@ -137,7 +143,8 @@ namespace PencilSim
 		//s_calcFitnessLock = true;
 
 		push.fitness = 0;			// initialize and/or reset to zero
-		for (Dealer& d : dealers) d.tablesAssigned = 0;		// reset assigned tables to zero ***********
+		for (Dealer& d : dealers) 
+			d.tablesAssigned = 0;		// reset assigned tables to zero ***********
 
 		for (Assignment& a : push.push)
 		{
@@ -149,19 +156,19 @@ namespace PencilSim
 			switch (a.aTable.gameName){
 			case Table::BJ:
 				if (FindGameKnowledge(Table::BJ, a.aDealerPtr)
-					? push.fitness += 3 : push.fitness -= 25);
+					? push.fitness += 3 : push.fitness -= 35);
 				break;
 			case Table::Rou:
 				if (FindGameKnowledge(Table::Rou, a.aDealerPtr)
-					? push.fitness += 5 : push.fitness -= 25);
+					? push.fitness += 5 : push.fitness -= 35);
 				break;
 			case Table::MB:
 				if (FindGameKnowledge(Table::MB, a.aDealerPtr)
-					? push.fitness += 5 : push.fitness -= 25);
+					? push.fitness += 5 : push.fitness -= 35);
 				break;
 			case Table::Poker:
 				if (FindGameKnowledge(Table::Poker, a.aDealerPtr)
-					? push.fitness += 3 : push.fitness -= 25);
+					? push.fitness += 3 : push.fitness -= 35);
 				break;
 			default:
 #if PEN_DEBUG
@@ -170,16 +177,19 @@ namespace PencilSim
 				break;
 			}
 		} 
-
+		
 		for (Dealer& d : dealers)
 		{
 			if (d.tablesAssigned > 1)
-				push.fitness -= (d.tablesAssigned - 1) * 50;	// -50 per extra assigned table
+				push.fitness -= (d.tablesAssigned - 1) * 75;	// -75 per extra assigned table
+
+			if ((d.pushMinutes + 20) > 80
+				? push.fitness -= 50 : push.fitness += 3);		// -50 for leaving someone in too long
 		}
 		//s_calcFitnessLock = false;
 
 #if PEN_DEBUG
-		LOG.LogInfo("Fitness: " + std::to_string(push.fitness));		// runs literally every iteration
+		//LOG.LogInfo("Fitness: " + std::to_string(push.fitness));		// runs literally every iteration
 #endif
 	}
 
@@ -208,7 +218,7 @@ namespace PencilSim
 
 		do
 		{
-			tempurature = tempurature * .95;
+			tempurature = tempurature * .99;		// TODO: refactor to static const variable
 			changeCount = 0;
 			attemptCount = 0;
 			attemptNoChange = 0;
@@ -217,13 +227,16 @@ namespace PencilSim
 				&& attemptCount < s_ATTEMPT_LIMIT)
 			{
 				int randTable = rand() % tablesIn.size();			// select which table to change
-				int newDealer = rand() % dealersIn.size();			// select a random dealer
+				int newDealerInt = rand() % dealersIn.size();			// select a random dealer
 				int oldFitness = pushIn.fitness;					// fitness before change
 				Dealer* oldDealer = pushIn.push[randTable].aDealerPtr;
 
 				if (pushIn.fitness > s_bestFitness) 
 					s_bestFitness = pushIn.fitness;
-				pushIn.push[randTable].aDealerPtr = &dealersIn[newDealer];		// the change to be appraised
+
+				Dealer* newDealer = &dealersIn[newDealerInt];
+				int oldPushMinutes = newDealer->pushMinutes;
+				pushIn.push[randTable].aDealerPtr = newDealer;		// the change to be appraised
 
 				CalculateFitness(pushIn, dealersIn);		// 'pushIn' object has post-change fitness
 
@@ -235,6 +248,7 @@ namespace PencilSim
 				else
 				{
 					pushIn.fitness = oldFitness;						// reset fitness
+					newDealer->pushMinutes = oldPushMinutes;			// reset pushMinutes
 					pushIn.push[randTable].aDealerPtr = oldDealer;		// reset dealer
 					attemptNoChange++;
 				}
@@ -279,4 +293,6 @@ namespace PencilSim
 			}
 		}
 	}
+
+
 }

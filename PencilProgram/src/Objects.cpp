@@ -157,6 +157,14 @@ void Dealer::GenerateDealers(std::array<Dealer, NUMBER_OF_DEALERS>& dealersIn)
 	dealersIn[24] = Dealer();
 }
 
+void Dealer::ChangePushMinutes()
+{
+	if (tablesAssigned > 0)
+		pushMinutes += 20;
+	else
+		pushMinutes = 0;
+}
+
 	// Assignment
 Assignment::Assignment()
 	: aTable(Table::Table()), aDealerPtr(nullptr)

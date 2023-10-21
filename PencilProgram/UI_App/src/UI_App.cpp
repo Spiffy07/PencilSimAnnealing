@@ -106,7 +106,7 @@ namespace MyApp {
 			future = std::async([&]() {
 				do {
 					q = std::move(PencilSim::PenMain(dealers));
-				} while (q.fitness < PencilSim::MAX_FITNESS_POSSIBLE);
+				} while (q.fitness < PencilSim::TARGET_FITNESS_MIN);
 			});
 		}
 		if (buttonDisabled)

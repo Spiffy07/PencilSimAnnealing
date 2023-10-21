@@ -21,7 +21,7 @@ namespace PencilSim
 	static const int s_ATTEMPT_LIMIT = 50000;			// limit of attempts per tempurature iteration
 	static const double s_STARTING_TEMPURATURE = 5000;	// starting temp, higher increases randomization
 	static const double s_e = 2.718281828;
-	const int MAX_FITNESS_POSSIBLE = 72;				// TODO: subject to change with development
+	const int TARGET_FITNESS_MIN = 72;				// TODO: subject to change with development
 	static int s_bestFitness = 0;						// highest found fitness
 	static bool s_calcFitnessLock = false;
 	static std::mutex s_DealersMutex;

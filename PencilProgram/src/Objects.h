@@ -53,6 +53,7 @@ public:
 	Dealer& operator=(Dealer&&) = default;
 
 	static void GenerateDealers(std::array<Dealer, NUMBER_OF_DEALERS>& dealersIn);
+	void ChangePushMinutes();
 };
 
 
