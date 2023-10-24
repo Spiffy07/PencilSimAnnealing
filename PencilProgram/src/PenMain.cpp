@@ -4,7 +4,7 @@
 #define SINGLE_THREAD
 
 #if PEN_DEBUG
-const Log::LogLevel LOG_LEVEL = Log::Info;		// set log level here
+const Log::LogLevel LOG_LEVEL = Log::Warning;		// set log level here
 Log LOG;
 #else
 #define RELEASE_CONSOLE_OUTPUT 1
@@ -26,6 +26,7 @@ static bool GeneratedDealers = false;			// TODO: find a better way to generate o
 
 namespace PencilSim 
 {
+
 
 	Push PenMain(std::array<Dealer, NUMBER_OF_DEALERS>& dealers)
 	//void PenMain(Push& p)
@@ -60,7 +61,7 @@ namespace PencilSim
 #ifdef SINGLE_THREAD
 		SimulateAnnealing(tables, dealers, first);
 
-		//CalculateFitness(first, dealers);
+		CalculateFitness(first, dealers);
 
 		for (Dealer& d : dealers)
 			d.ChangePushMinutes();
@@ -124,6 +125,7 @@ namespace PencilSim
 		return pIn;
 	}
 
+
 	static void CalculateFitness(Push& push, std::array<Dealer, NUMBER_OF_DEALERS>& dealers)
 	{
 		//PROFILE_FUNCTION();	// severely slows down due to calling every iteration
@@ -148,6 +150,12 @@ namespace PencilSim
 
 		for (Assignment& a : push.push)
 		{
+			/* next step is to include logic to target dealers with highest pushMinutes first.
+				- subtable and calculate first?
+				- calculate number of each duration of pushMinutes (20, 40, 60, 80) and include in fitness calculation?
+			*/
+
+
 			// count number of assigned tables MAX = 1
 			a.aDealerPtr->tablesAssigned += 1;	
 			//LOG.LogInfo(a.aDealerPtr->name + ": " + std::to_string(a.aDealerPtr->tablesAssigned));
@@ -183,8 +191,19 @@ namespace PencilSim
 			if (d.tablesAssigned > 1)
 				push.fitness -= (d.tablesAssigned - 1) * 75;	// -75 per extra assigned table
 
-			if ((d.pushMinutes + 20) > 80
-				? push.fitness -= 50 : push.fitness += 3);		// -50 for leaving someone in too long
+			if (d.pushMinutes == 80 ? push.fitness -= 10 : push.fitness += 1);	// -10 for leaving someone in too long
+
+			//switch (d.pushMinutes)
+			//{
+			//case 80:
+			//	push.fitness -= 3;
+			//	break;
+			//case 60:
+			//	push.fitness -= 2;
+			//	break;
+			//default:
+			//	break;
+			//}
 		}
 		//s_calcFitnessLock = false;
 
@@ -192,6 +211,7 @@ namespace PencilSim
 		//LOG.LogInfo("Fitness: " + std::to_string(push.fitness));		// runs literally every iteration
 #endif
 	}
+
 
 	static bool FindGameKnowledge(const Table::Games& gameName, Dealer* dealer)
 	{
@@ -203,6 +223,7 @@ namespace PencilSim
 		//}
 		//return false;
 	}
+
 
 	static void SimulateAnnealing(std::array<Table, NUMBER_OF_TABLES>& tablesIn, 
 		std::array<Dealer, NUMBER_OF_DEALERS>& dealersIn, Push& pushIn)
@@ -262,6 +283,7 @@ namespace PencilSim
 		} while (attemptNoChange < s_ATTEMPT_LIMIT);
 	}
 
+
 	static void PrintPush(Push& p)
 	{
 		PROFILE_FUNCTION();
@@ -277,16 +299,20 @@ namespace PencilSim
 			switch (p.aTable.gameName)
 			{
 			case Table::BJ:
-				LOG.LogError(std::to_string(p.aTable.number) + "     BJ     " + p.aDealerPtr->name);
+				LOG.LogError(std::to_string(p.aTable.number) + "     BJ     " + "pushMinutes: " 
+					+ std::to_string(p.aDealerPtr->pushMinutes) + "    " + p.aDealerPtr->name);
 				break;																	 
 			case Table::Rou:															 
-				LOG.LogError(std::to_string(p.aTable.number) + "     Rou    " + p.aDealerPtr->name);
+				LOG.LogError(std::to_string(p.aTable.number) + "     Rou    " + "pushMinutes: "
+					+ std::to_string(p.aDealerPtr->pushMinutes) + "    " + p.aDealerPtr->name);
 				break;																	 
 			case Table::MB:																 
-				LOG.LogError(std::to_string(p.aTable.number) + "     MB     " + p.aDealerPtr->name);
+				LOG.LogError(std::to_string(p.aTable.number) + "     MB     " + "pushMinutes: "
+					+ std::to_string(p.aDealerPtr->pushMinutes) + "    " + p.aDealerPtr->name);
 				break;																	 
 			case Table::Poker:															 
-				LOG.LogError(std::to_string(p.aTable.number) + "     Poker  " + p.aDealerPtr->name);
+				LOG.LogError(std::to_string(p.aTable.number) + "     Poker  " + "pushMinutes: "
+					+ std::to_string(p.aDealerPtr->pushMinutes) + "    " + p.aDealerPtr->name);
 				break;
 			default:
 				LOG.LogError("Error: Invalid message in final Log");

@@ -28,7 +28,7 @@ Table::Table(const Table& table)
 	:number(table.number), gameName(table.gameName)
 {
 #if PEN_DEBUG
-	LOG.LogWarning("Table object copied!");
+	LOG.LogInfo("Table object copied!");
 #endif
 }
 
@@ -121,7 +121,7 @@ Dealer::Dealer(const Dealer& dealer)
 	tablesAssigned(dealer.tablesAssigned)
 {
 #if PEN_DEBUG
-	LOG.LogWarning("Dealer object copied!");
+	LOG.LogInfo("Dealer object copied!");
 #endif
 }
 

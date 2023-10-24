@@ -105,8 +105,8 @@ namespace MyApp {
 			buttonPressed = true;
 			future = std::async([&]() {
 				do {
-					q = std::move(PencilSim::PenMain(dealers));
-				} while (q.fitness < PencilSim::TARGET_FITNESS_MIN);
+					q = std::move(PencilSim::PenMain(dealers));					// TODO: pushMinutes changes are kept when failed
+				} while (q.fitness < PencilSim::TARGET_FITNESS_MIN || false);	// for debugging
 			});
 		}
 		if (buttonDisabled)
