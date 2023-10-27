@@ -63,6 +63,11 @@ namespace PencilSim
 
 		CalculateFitness(first, dealers);
 
+		//if (first.fitness > TARGET_FITNESS_MIN)	// works but wont display change to log
+		//{
+		//	for (Dealer& d : dealers)
+		//		d.ChangePushMinutes();
+		//}
 		for (Dealer& d : dealers)
 			d.ChangePushMinutes();
 
@@ -191,19 +196,26 @@ namespace PencilSim
 			if (d.tablesAssigned > 1)
 				push.fitness -= (d.tablesAssigned - 1) * 75;	// -75 per extra assigned table
 
-			if (d.pushMinutes == 80 ? push.fitness -= 10 : push.fitness += 1);	// -10 for leaving someone in too long
+			//if ((d.pushMinutes + 20) > 80 ? push.fitness -= 25 : push.fitness += 1);	// -10 for leaving someone in too long
 
-			//switch (d.pushMinutes)
-			//{
-			//case 80:
-			//	push.fitness -= 3;
-			//	break;
-			//case 60:
-			//	push.fitness -= 2;
-			//	break;
-			//default:
-			//	break;
-			//}
+			switch (d.pushMinutes + 20)
+			{
+			case 20:
+				push.fitness += 50;
+				break;
+			case 40:
+				push.fitness += 0;
+				break;
+			case 60:
+				push.fitness -= 0;
+				break;
+			case 80:
+				push.fitness -= 50;
+				break;
+			default:	// left in too long
+				push.fitness -= 100;
+				break;
+			}
 		}
 		//s_calcFitnessLock = false;
 
